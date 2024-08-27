@@ -3750,7 +3750,7 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
-  aim: 0
+  aim: 1
   shoot: 0
   walk: 0
   reload: 0
@@ -6890,7 +6890,7 @@ MonoBehaviour:
   GroundedRadius: 0.28
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
   CinemachineCameraTarget: {fileID: 8338988565591873048}
   TopClamp: 70
   BottomClamp: -30
@@ -6910,7 +6910,7 @@ CharacterController:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_LayerOverridePriority: 0
+  m_LayerOverridePriority: 1
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
@@ -8776,7 +8776,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 36078ab0369161e49a29d349ae3e0739, type: 3}
   m_Controller: {fileID: 9100000, guid: 40db3173a05ae3242b1c182a09b0a183, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -9353,7 +9353,7 @@ GameObject:
   - component: {fileID: 7111604035074079385}
   - component: {fileID: 6133521873362498876}
   - component: {fileID: 8285025639305363958}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground_Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
