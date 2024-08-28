@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Diagnostics.Contracts;
+using UnityEngine;
 
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -110,8 +111,9 @@ namespace StarterAssets
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
-
+        private RigManager _rigManager;
         private const float _threshold = 0.01f;
+
 
         private bool _hasAnimator;
         private bool _walking=false;
@@ -121,6 +123,9 @@ namespace StarterAssets
         private bool _sprinting=false;
         private float _aimLayerWeight = 0;
         private bool _reloading=false;
+        private Vector2 _aimedMovingAnimationsInput = Vector2.zero;
+        private float aimRigWeight = 0f;
+        private float leftHandWeight = 0f;
 
 
 
@@ -139,10 +144,12 @@ namespace StarterAssets
 
         private void Awake()
         {
+            _rigManager = GetComponent<RigManager>();
             //ToDo: Return if not local player
             _mainCamera = CameraManager.mainCamera.gameObject;
             CameraManager.playerCamera.m_Follow = CinemachineCameraTarget.transform;
             CameraManager.aimingCamera.m_Follow = CinemachineCameraTarget.transform;
+
         }
 
         private void Start()
@@ -182,15 +189,19 @@ namespace StarterAssets
             _animator.SetFloat("Aimed",_aiming ? 1f : 0f);
 
             _aimLayerWeight = Mathf.Lerp(_aimLayerWeight, _aiming || _reloading? 1f : 0f , 10f * Time.deltaTime);
-            _animator.SetLayerWeight(1, _aimLayerWeight);   
+            _animator.SetLayerWeight(1, _aimLayerWeight);
+
+            aimRigWeight = Mathf.Lerp(aimRigWeight, _aiming && !_reloading ? 1f : 0f, 10f*Time.deltaTime);
+            leftHandWeight = Mathf.Lerp(leftHandWeight, (_aiming || _controller.isGrounded) && !_reloading ? 1f : 0f, 10f * Time.deltaTime);
+
+            _rigManager.aimTarget = CameraManager.singleton.aimTargetPoint;
+            _rigManager.aimWeight = aimRigWeight;
+            _rigManager.leftHandWeight = leftHandWeight;
 
             if (_input.walk)
             {
                 _input.walk = false;
                 _walking = !_walking;
-
-
-
             }
 
             targetSpeed =RunSpeed;
@@ -212,8 +223,23 @@ namespace StarterAssets
                 _speedAnimationMultiplier = 2;
             }
 
+            _aimedMovingAnimationsInput=Vector2.Lerp(_aimedMovingAnimationsInput,_input.move.normalized*_speedAnimationMultiplier,SpeedChangeRate * Time.deltaTime);
+            _animator.SetFloat("Speed_X", _aimedMovingAnimationsInput.x);
+            _animator.SetFloat("Speed_Y", _aimedMovingAnimationsInput.y);
+
+            if (_input.reload)
+            {
+                _input.reload = false;
+                _animator.SetTrigger("Reload");
+                _reloading = true;
+            }
+
             Move();
             Rotate();
+        }
+        public void ReloadFinished()
+        {
+            _reloading = false;
         }
 
         private void Rotate()
@@ -264,8 +290,8 @@ namespace StarterAssets
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+                _cinemachineTargetYaw += _input.look.x * CameraManager.singleton.sensitivity * deltaTimeMultiplier;
+                _cinemachineTargetPitch += _input.look.y * CameraManager.singleton.sensitivity * deltaTimeMultiplier;
             }
 
             // clamp our rotations so our values are limited 360 degrees

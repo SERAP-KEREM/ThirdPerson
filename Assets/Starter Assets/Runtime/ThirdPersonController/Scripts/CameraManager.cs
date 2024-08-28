@@ -36,6 +36,7 @@ public class CameraManager : MonoBehaviour
 
     private Vector3 _aimTargetPoint = Vector3.zero; public Vector3 aimTargetPoint { get { return _aimTargetPoint; } }
 
+    public float sensitivity { get { return _aiming ? _aimingSensitivity : defaultSensitivity; } }
     private void Awake()
     {
         _cameraBrain.m_DefaultBlend.m_Time = 0.1f;
