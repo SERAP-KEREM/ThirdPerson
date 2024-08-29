@@ -112,6 +112,7 @@ namespace StarterAssets
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
         private RigManager _rigManager;
+        private Character _character;
         private const float _threshold = 0.01f;
 
 
@@ -145,10 +146,12 @@ namespace StarterAssets
         private void Awake()
         {
             _rigManager = GetComponent<RigManager>();
+            _character =GetComponent<Character>();    
             //ToDo: Return if not local player
             _mainCamera = CameraManager.mainCamera.gameObject;
             CameraManager.playerCamera.m_Follow = CinemachineCameraTarget.transform;
             CameraManager.aimingCamera.m_Follow = CinemachineCameraTarget.transform;
+           
 
         }
 
@@ -174,6 +177,7 @@ namespace StarterAssets
 
         private void Update()
         {
+            bool armed =_character.weapon != null;
             _aiming = _input.aim;
             _sprinting = _input.sprint && _aiming==false;
 
@@ -184,16 +188,15 @@ namespace StarterAssets
             GroundedCheck();
 
              CameraManager.singleton.aiming = _aiming;
-
             _animator.SetFloat("Armed",armed ? 1f : 0f);    
             _animator.SetFloat("Aimed",_aiming ? 1f : 0f);
 
-            _aimLayerWeight = Mathf.Lerp(_aimLayerWeight, _aiming || _reloading? 1f : 0f , 10f * Time.deltaTime);
+            _aimLayerWeight = Mathf.Lerp(_aimLayerWeight,armed &&( _aiming || _reloading)? 1f : 0f , 10f * Time.deltaTime);
             _animator.SetLayerWeight(1, _aimLayerWeight);
 
-            aimRigWeight = Mathf.Lerp(aimRigWeight, _aiming && !_reloading ? 1f : 0f, 10f*Time.deltaTime);
-            leftHandWeight = Mathf.Lerp(leftHandWeight, (_aiming || _controller.isGrounded) && !_reloading ? 1f : 0f, 10f * Time.deltaTime);
-
+            aimRigWeight = Mathf.Lerp(aimRigWeight,armed && _aiming && !_reloading ? 1f : 0f, 10f * Time.deltaTime);
+            leftHandWeight = Mathf.Lerp(leftHandWeight, armed && !_reloading && (_aiming ||( _controller.isGrounded && _character.weapon.type == Weapon.Handle.TwoHanded)) ? 1f : 0f, 10f * Time.deltaTime);
+             
             _rigManager.aimTarget = CameraManager.singleton.aimTargetPoint;
             _rigManager.aimWeight = aimRigWeight;
             _rigManager.leftHandWeight = leftHandWeight;
@@ -227,8 +230,14 @@ namespace StarterAssets
             _animator.SetFloat("Speed_X", _aimedMovingAnimationsInput.x);
             _animator.SetFloat("Speed_Y", _aimedMovingAnimationsInput.y);
 
-            if (_input.reload)
+            if(_input.shoot && armed && !_reloading && _aiming && _character.weapon.Shoot(_character,CameraManager.singleton.aimTargetPoint))
             {
+                _rigManager.ApplyWeaponKick(_character.weapon.handkick, _character.weapon.bodykick);
+            }
+
+            if (_input.reload && !_reloading)
+            {
+                Debug.Log("Reload");
                 _input.reload = false;
                 _animator.SetTrigger("Reload");
                 _reloading = true;
