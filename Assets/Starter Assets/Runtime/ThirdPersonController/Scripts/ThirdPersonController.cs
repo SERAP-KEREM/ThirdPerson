@@ -197,7 +197,7 @@ namespace StarterAssets
             aimRigWeight = Mathf.Lerp(aimRigWeight,armed && _aiming && !_reloading ? 1f : 0f, 10f * Time.deltaTime);
             leftHandWeight = Mathf.Lerp(leftHandWeight, armed && !_reloading && (_aiming ||( _controller.isGrounded && _character.weapon.type == Weapon.Handle.TwoHanded)) ? 1f : 0f, 10f * Time.deltaTime);
              
-            _rigManager.aimTarget = CameraManager.singleton.aimTargetPoint;
+            //_rigManager.aimTarget = CameraManager.singleton.aimTargetPoint;
             _rigManager.aimWeight = aimRigWeight;
             _rigManager.leftHandWeight = leftHandWeight;
 
@@ -257,8 +257,8 @@ namespace StarterAssets
             {
                 Vector3 aimTarget = CameraManager.singleton.aimTargetPoint;
                 aimTarget.y=transform.position.y;
-                Vector3 aimDirection= (aimTarget-transform.position).normalized;
-                transform.forward=Vector3.Lerp(transform.forward,aimDirection, AimRotationSpeed* Time.deltaTime);
+               // Vector3 aimDirection= (aimTarget-transform.position).normalized;
+                //transform.forward=Vector3.Lerp(transform.forward,aimDirection, AimRotationSpeed* Time.deltaTime);
             }
         }
 

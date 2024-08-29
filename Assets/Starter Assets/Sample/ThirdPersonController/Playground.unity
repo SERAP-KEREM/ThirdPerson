@@ -1475,7 +1475,7 @@ MonoBehaviour:
       m_Item7:
         transform: {fileID: 0}
         weight: 0
-    m_Offset: {x: 0, y: 35, z: 0}
+    m_Offset: {x: 0, y: 0, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
     m_AimAxis: 4
@@ -9013,7 +9013,7 @@ Animator:
   m_GameObject: {fileID: 4416926083347132227}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 36078ab0369161e49a29d349ae3e0739, type: 3}
-  m_Controller: {fileID: 9100000, guid: 40db3173a05ae3242b1c182a09b0a183, type: 2}
+  m_Controller: {fileID: 9100000, guid: e9c2fa298f18e0448ae214e28af950d6, type: 2}
   m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -9056,7 +9056,7 @@ MonoBehaviour:
   _rightHand: {fileID: 1663890457}
   _leftHand: {fileID: 351630887}
   _body: {fileID: 584756884}
-  _aimTarget: {fileID: 1034865729}
+  _aimTarget: {fileID: 0}
   _weaponHandKickDirection: {x: 0, y: 0, z: 0}
   _weaponBodyKickDirection: {x: -1, y: 0, z: 0}
 --- !u!114 &6982812147933622150

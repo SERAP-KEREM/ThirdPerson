@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -8,7 +8,7 @@ public class RigManager : MonoBehaviour
     [SerializeField] private MultiAimConstraint _rightHand = null;
     [SerializeField] private TwoBoneIKConstraint _leftHand = null;
     [SerializeField] private MultiAimConstraint _body = null;
-    [SerializeField] private Transform _aimTarget = null;
+   [SerializeField] private Transform _aimTarget = null;
     [SerializeField] private  Vector3 _weaponHandKickDirection=new Vector3(0,0,0);
     [SerializeField] private  Vector3 _weaponBodyKickDirection=new Vector3(-1,0,0);
 
