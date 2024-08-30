@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6dd0e9004ceec2842a9e8be9e08908b3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 235010
+  packageName: FPS Scar-L - Sci-Fi weapon edition
+  packageVersion: 1.0
+  assetPath: Assets/Serrage_CGArt/ShooterWeaponSet/Resource/WEAPON/AR/SCAR_L/Animation/Gun_Animator.controller
+  uploadId: 538662

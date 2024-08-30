@@ -220,10 +220,10 @@ MonoBehaviour:
   _clipSize: 30
   _handKick: 5
   _bodyKick: 5
-  _leftHandPosition: {x: 0.06369994, y: -0.3219, z: -0.0294001}
-  _leftHandRotation: {x: 42.261, y: -173.398, z: 213.599}
+  _leftHandPosition: {x: 0.06, y: -0.353, z: 0.02}
+  _leftHandRotation: {x: 42.261, y: -173.4, z: 213.5}
   _rightHandPosition: {x: 0.0073, y: -0.2231, z: -0.0339}
-  _rightHandRotation: {x: 77.455, y: 3.271, z: 178.527}
+  _rightHandRotation: {x: 88.8, y: 2.12, z: 178.527}
   _muzzle: {fileID: 8378262463490977592}
   _flash: {fileID: 2148897262322342727}
   _projectile: {fileID: 7104789598548574155, guid: f67221205662e6441a0e9e21e4f161ea,
@@ -405,13 +405,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4676691868934593776}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.003, y: 0.012, z: 0.456}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
+  m_LocalPosition: {x: -0.0029999998, y: 0.012, z: 0.45600003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7027280936543335927}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!1 &5610862023022714961
 GameObject:
   m_ObjectHideFlags: 0

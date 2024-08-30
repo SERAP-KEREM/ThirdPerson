@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
 using UnityEngine;
-
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+using UnityEngine.TextCore.Text;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -123,12 +123,11 @@ namespace StarterAssets
         private bool _aiming=false;
         private bool _sprinting=false;
         private float _aimLayerWeight = 0;
-        private bool _reloading=false;
+       // private bool _reloading=false;
+
         private Vector2 _aimedMovingAnimationsInput = Vector2.zero;
         private float aimRigWeight = 0f;
         private float leftHandWeight = 0f;
-
-
 
         private bool IsCurrentDeviceMouse
         {
@@ -148,9 +147,9 @@ namespace StarterAssets
             _rigManager = GetComponent<RigManager>();
             _character =GetComponent<Character>();    
             //ToDo: Return if not local player
-            _mainCamera = CameraManager.mainCamera.gameObject;
-            CameraManager.playerCamera.m_Follow = CinemachineCameraTarget.transform;
-            CameraManager.aimingCamera.m_Follow = CinemachineCameraTarget.transform;
+            _mainCamera = CameraManager1.mainCamera.gameObject;
+            CameraManager1.playerCamera.m_Follow = CinemachineCameraTarget.transform;
+            CameraManager1.aimingCamera.m_Follow = CinemachineCameraTarget.transform;
            
 
         }
@@ -187,17 +186,18 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
 
-             CameraManager.singleton.aiming = _aiming;
+             CameraManager1.singleton.aiming = _aiming;
             _animator.SetFloat("Armed",armed ? 1f : 0f);    
             _animator.SetFloat("Aimed",_aiming ? 1f : 0f);
 
-            _aimLayerWeight = Mathf.Lerp(_aimLayerWeight,armed &&( _aiming || _reloading)? 1f : 0f , 10f * Time.deltaTime);
+            _aimLayerWeight = Mathf.Lerp(_aimLayerWeight,armed &&( _aiming || _character.reloading)? 1f : 0f , 10f * Time.deltaTime);
             _animator.SetLayerWeight(1, _aimLayerWeight);
 
-            aimRigWeight = Mathf.Lerp(aimRigWeight,armed && _aiming && !_reloading ? 1f : 0f, 10f * Time.deltaTime);
-            leftHandWeight = Mathf.Lerp(leftHandWeight, armed && !_reloading && (_aiming ||( _controller.isGrounded && _character.weapon.type == Weapon.Handle.TwoHanded)) ? 1f : 0f, 10f * Time.deltaTime);
-             
-            //_rigManager.aimTarget = CameraManager.singleton.aimTargetPoint;
+            aimRigWeight = Mathf.Lerp(aimRigWeight,armed && _aiming && !_character.reloading ? 1f : 0f, 10f * Time.deltaTime);
+            leftHandWeight = Mathf.Lerp(leftHandWeight, armed && !_character.reloading && (_aiming ||( _controller.isGrounded && _character.weapon.type == Weapon.Handle.TwoHanded)) ? 1f : 0f, 10f * Time.deltaTime);
+
+            // _rigManager.aimTarget = CameraManager1.singleton.aimTargetPoint;
+            _rigManager.aimTarget = _character.transform.position + _character.transform.forward * 10f;
             _rigManager.aimWeight = aimRigWeight;
             _rigManager.leftHandWeight = leftHandWeight;
 
@@ -229,33 +229,33 @@ namespace StarterAssets
             _aimedMovingAnimationsInput=Vector2.Lerp(_aimedMovingAnimationsInput,_input.move.normalized*_speedAnimationMultiplier,SpeedChangeRate * Time.deltaTime);
             _animator.SetFloat("Speed_X", _aimedMovingAnimationsInput.x);
             _animator.SetFloat("Speed_Y", _aimedMovingAnimationsInput.y);
+           // Vector3 target = _character.transform.position + _character.transform.forward * 10f;
+           Vector3 target = _mainCamera.transform.position*2f + _mainCamera.transform.forward * 30f;
 
-            if(_input.shoot && armed && !_reloading && _aiming && _character.weapon.Shoot(_character,CameraManager.singleton.aimTargetPoint))
+            // Yukarı doğru offset ekliyoruz
+              target += Vector3.up * 1f; // 2 birim yukarı ateş eder. Bu değeri ihtiyacınıza göre ayarlayabilirsiniz.
+
+            if (_input.shoot && armed && !_character.reloading && _aiming && _character.weapon.Shoot(_character,target))
             {
                 _rigManager.ApplyWeaponKick(_character.weapon.handkick, _character.weapon.bodykick);
             }
 
-            if (_input.reload && !_reloading)
+            if (_input.reload && !_character.reloading)
             {
                 Debug.Log("Reload");
                 _input.reload = false;
-                _animator.SetTrigger("Reload");
-                _reloading = true;
+                _character.Reload();
             }
 
             Move();
             Rotate();
         }
-        public void ReloadFinished()
-        {
-            _reloading = false;
-        }
-
+      
         private void Rotate()
         {
             if (_aiming)
             {
-                Vector3 aimTarget = CameraManager.singleton.aimTargetPoint;
+                Vector3 aimTarget = CameraManager1.singleton.aimTargetPoint;
                 aimTarget.y=transform.position.y;
                // Vector3 aimDirection= (aimTarget-transform.position).normalized;
                 //transform.forward=Vector3.Lerp(transform.forward,aimDirection, AimRotationSpeed* Time.deltaTime);
@@ -299,8 +299,8 @@ namespace StarterAssets
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetYaw += _input.look.x * CameraManager.singleton.sensitivity * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.look.y * CameraManager.singleton.sensitivity * deltaTimeMultiplier;
+                _cinemachineTargetYaw += _input.look.x * CameraManager1.singleton.sensitivity * deltaTimeMultiplier;
+                _cinemachineTargetPitch += _input.look.y * CameraManager1.singleton.sensitivity * deltaTimeMultiplier;
             }
 
             // clamp our rotations so our values are limited 360 degrees

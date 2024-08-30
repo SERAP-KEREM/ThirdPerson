@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.TextCore.Text;
 
 public class RigManager : MonoBehaviour
 {
     [SerializeField] private MultiAimConstraint _rightHand = null;
     [SerializeField] private TwoBoneIKConstraint _leftHand = null;
     [SerializeField] private MultiAimConstraint _body = null;
-   [SerializeField] private Transform _aimTarget = null;
+    [SerializeField] private Transform _aimTarget = null;
     [SerializeField] private  Vector3 _weaponHandKickDirection=new Vector3(0,0,0);
     [SerializeField] private  Vector3 _weaponBodyKickDirection=new Vector3(-1,0,0);
 
@@ -19,6 +20,9 @@ public class RigManager : MonoBehaviour
 
     private Vector3 _originalRightHandOffset = Vector3.zero;
     private Vector3 _originalBodyOffset= Vector3.zero;
+
+
+
 
     private void Awake()
     {
@@ -43,7 +47,7 @@ public class RigManager : MonoBehaviour
     }
     private void Update()
     {
-
+        
         if (_rightHand.data.offset != _originalRightHandOffset)
         {
             _rightHand.data.offset = Vector3.Lerp(_rightHand.data.offset, _originalRightHandOffset, 10f* Time.deltaTime);

@@ -1,20 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.WSA;
+using UnityEngine.TextCore.Text;
+
 
 public class Character : MonoBehaviour
 {
     [SerializeField] private Transform _weaponHolder = null;
 
     private Weapon _weapon = null; public Weapon weapon { get { return _weapon; } }
+    private Ammo _ammo = null; public Ammo ammo { get { return _ammo; } }
+    
     private List<Item> _items = new List<Item>();
+    private Animator _animator=null;    
     private RigManager _rigManager = null;
-
+    private bool _reloading = false; public bool reloading { get { return _reloading;} }
     private void Awake()
     {
         _rigManager = GetComponent<RigManager>();
-        Initialize(new Dictionary<string, int> { { "AKM", 1 }, } );
+        _animator = GetComponent<Animator>();
+        Initialize(new Dictionary<string, int> { { "ScarL", 1 }, } );
     }
 
     public void Initialize(Dictionary<string, int> items)
@@ -82,10 +87,19 @@ public class Character : MonoBehaviour
                 weapon.transform.localPosition = weapon.rightHandPosition;
                 weapon.transform.localEulerAngles = weapon.rightHandRotation;
             }
-            _rigManager.SetLeftHandGripData(weapon.leftHandPosition,weapon.leftHandPosition);
+            _rigManager.SetLeftHandGripData(weapon.leftHandPosition, weapon.leftHandPosition);
             weapon.gameObject.SetActive(true);
-            _weapon= weapon;
-            
+            _weapon = weapon;
+            _ammo = null;
+            for (int i = 0; i < _items.Count; i++)
+            {
+                if (_items[i] != null && _items[i].GetType() == typeof(Ammo) && _weapon.ammoID == _items[i].id)
+                {
+                    _ammo=(Ammo)_items[i];
+                    break;
+                }
+
+            }
         }
     }
 
@@ -102,4 +116,29 @@ public class Character : MonoBehaviour
     {
 
     }
+
+    public void Reload()
+    {
+        if(_weapon != null && !_reloading && _weapon.ammo<_weapon.clipSize && _ammo != null && _ammo.amount>0)
+        {
+            _animator.SetTrigger("Reload");
+            _reloading = true;
+        }
+     
+    }
+    public void ReloadFinished()
+    {
+        if (_weapon != null && _weapon.ammo < _weapon.clipSize && _ammo != null && _ammo.amount > 0)
+        {
+            int amount = _weapon.clipSize - _weapon.ammo;
+            if(_ammo.amount < amount)
+            {
+                amount = _ammo.amount;  
+            }
+            _ammo.amount -= amount;
+            _weapon.ammo += amount;
+        }
+        _reloading = false;
+    }
+
 }

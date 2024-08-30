@@ -1,11 +1,72 @@
-fileFormatVersion: 2
-guid: 94b55ae710d13f74dabec8ed164ad704
-MonoImporter:
-  externalObjects: {}
-  serializedVersion: 2
-  defaultReferences: []
-  executionOrder: 0
-  icon: {instanceID: 0}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+1. Oyun Konsepti ve Teması
+Görevler:
+
+Oyun Temasını Belirleme: Kafe yönetim oyununun genel temasını ve özelliklerini netleştirin.
+Oyun Adını Seçme: Oyunun ismini belirleyin.
+Oynanış Tasarımı: Oyuncuların nasıl bir deneyim yaşayacağını ve hangi temel mekaniklerin olacağını planlayın.
+2. Oyun Mekanikleri
+Ön Plan Mekanikleri:
+Sipariş Alma ve Servis:
+
+Sipariş Sistemi: Müşterilerden sipariş almayı sağlayan bir sistem oluşturun.
+Hazırlık Süreci: Siparişlerin nasıl hazırlanacağını ve nasıl sunulacağını tasarlayın.
+Müşteri Memnuniyeti: Müşteri memnuniyetinin nasıl ölçüleceğini belirleyin.
+Özel Etkinlikler ve Kampanyalar:
+
+Etkinlik Tasarımı: Belirli etkinlikler ve kampanyalar için mekanikler tasarlayın.
+Etkinlikler için Arayüz: Etkinliklerin nasıl duyurulacağını ve yönetileceğini belirleyin.
+Arka Plan Mekanikleri:
+Çalışan Yönetimi:
+
+İşe Alım: Çalışanları işe almayı ve yönetmeyi sağlayan bir sistem oluşturun.
+Eğitim ve Performans: Çalışanların eğitim ve performans izleme mekaniklerini planlayın.
+Ekipman ve Menü Yönetimi:
+
+Ekipman Yükseltmeleri: Mutfak ekipmanlarının nasıl yükseltileceğini tasarlayın.
+Menü Yönetimi: Menüdeki ürünleri ekleme ve değiştirme sürecini oluşturun.
+Yükseltmeler ve Geliştirmeler:
+
+İç Mekan Geliştirmeleri: Kafe iç mekanındaki iyileştirmeleri planlayın.
+Yükseltme Mekanikleri: Yükseltme ve geliştirme sistemlerini tasarlayın.
+Müşteri Akışı ve Talepler:
+
+Müşteri Akışı Yönetimi: Müşteri akışını ve taleplerini yönetme mekanizmalarını belirleyin.
+Taleplerin Yönetimi: Artan müşteri taleplerini nasıl karşılayacağınızı planlayın.
+Performans İzleme:
+
+Performans İzleme Araçları: Çalışan ve ekipman performansını izlemek için araçlar oluşturun.
+İyileştirme Planları: Performansı artırmak için yapmanız gereken iyileştirmeleri planlayın.
+3. Oyun Akışı ve Seviye Yapısı
+Başlangıç:
+
+Başlangıç Seviyesi: Küçük bir kafe ile başlamayı sağlayacak sistemleri oluşturun.
+Temel Eğitim: Oyunculara temel oyun mekaniklerini öğretecek bir eğitim bölümü hazırlayın.
+Orta Aşama:
+
+Çalışan ve Ekipman Geliştirmeleri: Çalışanları eğitme ve ekipmanları yükseltme mekanizmalarını entegre edin.
+Müşteri Yoğunluğu Artışı: Artan müşteri sayısı ve sipariş yoğunluğu için sistemler oluşturun.
+İleri Aşama:
+
+Yeni Şubeler Açma: Yeni şubeler açmayı sağlayacak mekanizmaları geliştirin.
+Farklı Temalar: Yeni şubelerde farklı temalar ve özellikler ekleyin.
+4. Grafik ve Ses Tasarımı
+Grafik Tasarım:
+
+İç Mekan Tasarımı: Kafe iç mekanının görsel tasarımını oluşturun.
+Karakter Tasarımı: Müşteri ve çalışan karakterlerini tasarlayın.
+Menü Öğeleri: Menü öğelerinin görsel temsillerini hazırlayın.
+Ses Tasarımı:
+
+Arka Plan Müzikleri: Kafe atmosferine uygun arka plan müziklerini seçin veya oluşturun.
+Ses Efektleri: Müşteri ve çalışan ses efektlerini entegre edin.
+Etkinlik Sesleri: Özel etkinlikler için ses efektleri hazırlayın.
+5. Test ve İyileştirme
+Oyun Testi:
+
+Mekanik Testleri: Oyun mekaniklerini test edin ve düzgün çalışıp çalışmadığını kontrol edin.
+Müşteri ve Çalışan Performansı: Müşteri memnuniyeti ve çalışan performansını değerlendirin.
+Geri Bildirim:
+
+Geri Bildirim Toplama: Oyunculardan geri bildirim alın ve analiz edin.
+İyileştirmeler: Geri bildirimlere göre oyunu iyileştirin ve güncelleyin.
+Bu bölümler, oyununuzu sistematik bir şekilde geliştirebilmeniz için bir yol haritası sunar. Her bölümü tamamladıktan sonra bir sonraki bölüme geçebilir ve oyununuzu adım adım inşa edebilirsiniz.

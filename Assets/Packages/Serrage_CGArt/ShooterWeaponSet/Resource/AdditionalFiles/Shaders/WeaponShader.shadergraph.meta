@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 1a8b339b222d40e478d70b28c015be5b
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 235010
+  packageName: FPS Scar-L - Sci-Fi weapon edition
+  packageVersion: 1.0
+  assetPath: Assets/Serrage_CGArt/ShooterWeaponSet/Resource/AdditionalFiles/Shaders/WeaponShader.shadergraph
+  uploadId: 538662
