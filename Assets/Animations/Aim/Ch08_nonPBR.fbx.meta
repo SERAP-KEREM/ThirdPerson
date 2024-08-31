@@ -16,8 +16,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -80,8 +78,14 @@ ModelImporter:
   referencedClips:
   - 08d191a9b7d072647948efd6e53b8115
   - a1b77256f1eb32b44a5734e466d7582b
+  - 83a474b08036885409d735769cca92cc
   - 8c4dbec6c67a392438627ba0f6ec4c67
+  - 060b726176d74964db53d7d7c6901553
   - cce1d6ddbbb2bb34ba045997ffab98d3
+  - ad16c6973be388e4db058613d9768ceb
+  - 239cfb577cd25304fabb45e1a3ce59d6
+  - f87cc13680a6c4c46ab747c7f5d3a9d5
+  - e3e6bc50e0c746a43b76c6f557f6deaa
   importAnimation: 1
   humanDescription:
     serializedVersion: 3

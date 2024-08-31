@@ -35,7 +35,7 @@ public class Weapon : Item
         OneHanded=1,TwoHanded=2,
     }
     private float _fireTimer = 0;
-    private int _ammo = 0; public int ammo { get { return _ammo;} set { _ammo = value; } }
+    private int _ammo = 30; public int ammo { get { return _ammo;} set { _ammo = value; } }
      
     private void Awake()
     {
@@ -44,12 +44,12 @@ public class Weapon : Item
     }
     public bool Shoot(Character character,Vector3 target)
     {
-       
 
         float passedTime =Time.realtimeSinceStartup - _fireTimer;
-        if(_ammo > 0 && passedTime >= _fireRate)
+       
+        if (_ammo > 0 && passedTime >= _fireRate)
         {
-            _ammo = -1;
+            _ammo -= 1;
             _fireTimer = Time.realtimeSinceStartup;
             Projectile projectile=Instantiate(_projectile,_muzzle.position,Quaternion.identity);
             projectile.Initialize(character, target,_damage);

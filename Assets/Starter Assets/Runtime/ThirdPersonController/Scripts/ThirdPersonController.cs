@@ -190,11 +190,11 @@ namespace StarterAssets
             _animator.SetFloat("Armed",armed ? 1f : 0f);    
             _animator.SetFloat("Aimed",_aiming ? 1f : 0f);
 
-            _aimLayerWeight = Mathf.Lerp(_aimLayerWeight,armed &&( _aiming || _character.reloading)? 1f : 0f , 10f * Time.deltaTime);
+            _aimLayerWeight = Mathf.Lerp(_aimLayerWeight, _character.switchWeapon || (armed &&( _aiming || _character.reloading))? 1f : 0f , 10f * Time.deltaTime);
             _animator.SetLayerWeight(1, _aimLayerWeight);
 
             aimRigWeight = Mathf.Lerp(aimRigWeight,armed && _aiming && !_character.reloading ? 1f : 0f, 10f * Time.deltaTime);
-            leftHandWeight = Mathf.Lerp(leftHandWeight, armed && !_character.reloading && (_aiming ||( _controller.isGrounded && _character.weapon.type == Weapon.Handle.TwoHanded)) ? 1f : 0f, 10f * Time.deltaTime);
+            leftHandWeight = Mathf.Lerp(leftHandWeight, armed &&_character.switchWeapon==false && !_character.reloading && (_aiming ||( _controller.isGrounded && _character.weapon.type == Weapon.Handle.TwoHanded)) ? 1f : 0f, 10f * Time.deltaTime);
 
             // _rigManager.aimTarget = CameraManager1.singleton.aimTargetPoint;
             _rigManager.aimTarget = _character.transform.position + _character.transform.forward * 10f;
@@ -234,9 +234,12 @@ namespace StarterAssets
 
             // Yukarı doğru offset ekliyoruz
               target += Vector3.up * 1f; // 2 birim yukarı ateş eder. Bu değeri ihtiyacınıza göre ayarlayabilirsiniz.
-
+            //Debug.Log("_input.shoot"+_input.shoot);
+            //Debug.Log("_aiming"+_aiming);
+            //Debug.Log("_character.weapon.Shoot(_character,target)"+_character.weapon.Shoot(_character, target));
             if (_input.shoot && armed && !_character.reloading && _aiming && _character.weapon.Shoot(_character,target))
             {
+                Debug.Log("shoot");
                 _rigManager.ApplyWeaponKick(_character.weapon.handkick, _character.weapon.bodykick);
             }
 
@@ -245,6 +248,12 @@ namespace StarterAssets
                 Debug.Log("Reload");
                 _input.reload = false;
                 _character.Reload();
+            }
+
+            if(_input.switchWeapon!=0)
+            {
+                _character.ChangeWeapon(_input.switchWeapon);
+               
             }
 
             Move();

@@ -215,6 +215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: AKM
   _type: 2
+  _ammoID: 7.62x39mm
   _damage: 1
   _fireRate: 0.2
   _clipSize: 30
