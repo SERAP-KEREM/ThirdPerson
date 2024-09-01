@@ -5,6 +5,8 @@ using UnityEngine;
 public class PrefabManager : MonoBehaviour
 {
     public Item[] _items = null;
+    [SerializeField] private Character[] _charactors = null;
+
     private static PrefabManager _singleton = null;
 
     public static PrefabManager singleton
@@ -27,6 +29,20 @@ public class PrefabManager : MonoBehaviour
                 if (_items[i] !=null && _items[i].id==id)
                 {
                     return _items[i];
+                }
+            }
+        }
+        return null;
+    }
+    public Character GetCharacterPrefab(string id)
+    {
+        if (_charactors != null)
+        {
+            for (int i = 0; i < _charactors.Length; i++)
+            {
+                if (_charactors[i] != null && _charactors[i].id == id)
+                {
+                    return _charactors[i];
                 }
             }
         }

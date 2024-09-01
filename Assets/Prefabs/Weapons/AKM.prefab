@@ -216,13 +216,13 @@ MonoBehaviour:
   _id: AKM
   _type: 2
   _ammoID: 7.62x39mm
-  _damage: 1
+  _damage: 20
   _fireRate: 0.2
   _clipSize: 30
   _handKick: 5
   _bodyKick: 5
-  _leftHandPosition: {x: 0.06, y: -0.353, z: 0.02}
-  _leftHandRotation: {x: 42.261, y: -173.4, z: 213.5}
+  _leftHandPosition: {x: 0.0699, y: -0.2088, z: 0.0605}
+  _leftHandRotation: {x: 331.276, y: -552.975, z: 583.351}
   _rightHandPosition: {x: 0.0073, y: -0.2231, z: -0.0339}
   _rightHandRotation: {x: 88.8, y: 2.12, z: 178.527}
   _muzzle: {fileID: 8378262463490977592}

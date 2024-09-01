@@ -50,13 +50,13 @@ MonoBehaviour:
   _id: ScarL
   _type: 2
   _ammoID: 7.62x39mm
-  _damage: 1
+  _damage: 30
   _fireRate: 0.1
   _clipSize: 30
   _handKick: 5
   _bodyKick: 5
-  _leftHandPosition: {x: 0.06, y: -0.353, z: 0.02}
-  _leftHandRotation: {x: 42.261, y: -173.4, z: 213.5}
+  _leftHandPosition: {x: 0.066, y: -0.1784, z: 0.035}
+  _leftHandRotation: {x: 178.242, y: -5.628998, z: 33.90199}
   _rightHandPosition: {x: 0.0073, y: -0.2231, z: -0.0339}
   _rightHandRotation: {x: 88.8, y: 2.12, z: 178.527}
   _muzzle: {fileID: 3712427169103837544}
