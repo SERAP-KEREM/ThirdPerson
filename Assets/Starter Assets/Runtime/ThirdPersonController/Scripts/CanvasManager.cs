@@ -5,15 +5,35 @@ using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Button _serverButton = null;
+    [SerializeField] private Button _clientButton = null;
+    private void Start()
     {
-        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        _serverButton.onClick.AddListener(StartServer);
+        _clientButton.onClick.AddListener(StartClient);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void StartServer()
     {
-        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        _serverButton.gameObject.SetActive(false);
+        _clientButton.gameObject.SetActive(false);
+        SessionManager.singleton.StartServer();
     }
+
+    private void StartClient()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        _serverButton.gameObject.SetActive(false);
+        _clientButton.gameObject.SetActive(false);
+        SessionManager.singleton.StartClient();
+    }
+
 }

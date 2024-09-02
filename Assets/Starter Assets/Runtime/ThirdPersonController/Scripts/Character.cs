@@ -1,13 +1,15 @@
+using LitJson;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.TextCore.Text;
 using UnityEngine.Windows;
 
 
-public class Character : MonoBehaviour
+public class Character : NetworkBehaviour
 {
     public bool isLocalPlayer = false;
     [SerializeField] private string _id = ""; public string id {  get { return _id; } }
@@ -45,6 +47,9 @@ public class Character : MonoBehaviour
     private Vector3 _aimTarget = Vector3.zero; public Vector3 aimTarget { get { return _aimTarget; } set { _aimTarget = value; } }
     private Vector3 _lastPosition = Vector3.zero;
 
+    private ulong _clientID = 0;
+    private bool _initialized = false;
+
     private void Awake()
     {
         _ragdollColliders=GetComponentsInChildren<Collider>();
@@ -67,11 +72,30 @@ public class Character : MonoBehaviour
         SetRagdollStatus(false);
         _rigManager = GetComponent<RigManager>();
         _animator = GetComponent<Animator>();
-        Initialize(new Dictionary<string, int> { { "ScarL", 1 }, { "AKM", 1 },{ "7.62x39mm",1000 } } );
+
+    }
+    public void InitializeServer(Dictionary<string, int> items,List<string> itemsId,ulong clientID)
+    {
+        if (_initialized)
+        {
+            return;
+        }
+        _initialized = true;
+        _clientID = clientID;
+        _Initialize(items, itemsId);
     }
 
-    private void Start()
+
+    [ClientRpc]
+    public void InitalizeClientRpc(string itemsJson, string itemsIdJson,ulong clientID)
     {
+        if(_initialized)
+        {
+            return;
+        }
+        _initialized = true;
+        _clientID = clientID;
+
         if(isLocalPlayer)
         {
             SetLayer(transform, LayerMask.NameToLayer("LocalPlayer"));
@@ -80,6 +104,12 @@ public class Character : MonoBehaviour
         else
         {
             SetLayer(transform, LayerMask.NameToLayer("NetworkPlayer"));
+        }
+        Dictionary<string,int> items=JsonMapper.ToObject<Dictionary<string,int>>(itemsJson);
+        List<string> itemsId=JsonMapper.ToObject<List<string>>(itemsIdJson);    
+        if(items != null && itemsId != null )
+        {
+            _Initialize(items, itemsId);
         }
     }
     private void Update()
@@ -133,21 +163,22 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void Initialize(Dictionary<string, int> items)
+    private void _Initialize(Dictionary<string, int> items,List<string> itemsId)
     {
         if (items != null && PrefabManager.singleton != null)
         {
+            int i = 0;
             int firstWeaponIndex = -1;
             foreach (var itemData in items)
             {
                 Item prefab = PrefabManager.singleton.GetItemPrefab(itemData.Key);
                 if (prefab != null && itemData.Value > 0)
                 {
-                    for (int i = 1; i <= itemData.Value; i++)
-                    {
-                        bool done= false;   
+
+
                         Item item = Instantiate(prefab, transform);
-                        if (item.GetType() == typeof(Weapon))
+                     item.networkID = itemsId[i];
+                    if (item.GetType() == typeof(Weapon))
                         {
                             Weapon w = (Weapon)item;
                             item.transform.SetParent(_weaponHolder);
@@ -158,23 +189,17 @@ public class Character : MonoBehaviour
                             {
                                 firstWeaponIndex = _items.Count;
                             }
-
                         }
                         else if(item.GetType() == typeof(Ammo))
                         {
                             Ammo a = (Ammo)item;
                             a.amount=itemData.Value;
-                            done = true;
 
                         }
                         item.gameObject.SetActive(false);
                         _items.Add(item);
-                        if(done)
-                        {
-                            break;
-                        }
-                    }
                 }
+                i++;
             }
             if (firstWeaponIndex >= 0 && _weapon == null)
             {
