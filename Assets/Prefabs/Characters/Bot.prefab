@@ -2015,13 +2015,6 @@ MonoBehaviour:
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.3
-  FallTimeout: 0.15
-  Grounded: 1
-  GroundedOffset: -0.14
-  GroundedRadius: 0.28
-  GroundLayers:
-    serializedVersion: 2
-    m_Bits: 1
   CinemachineCameraTarget: {fileID: 8325658320380428751}
   TopClamp: 70
   BottomClamp: -30
@@ -2218,9 +2211,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc9258f8f5cf46b4c98b453497117e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLocalPlayer: 1
   _id: Bot
   _weaponHolder: {fileID: 2691685566268281451}
+  FallTimeout: 0.15
+  GroundedOffset: -0.14
+  GroundedRadius: 0.28
+  GroundLayers:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &2283034058330794313
 MonoBehaviour:
   m_ObjectHideFlags: 0

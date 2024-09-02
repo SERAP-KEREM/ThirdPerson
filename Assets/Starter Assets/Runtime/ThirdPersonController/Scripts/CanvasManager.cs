@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,5 +35,15 @@ public class CanvasManager : MonoBehaviour
         _clientButton.gameObject.SetActive(false);
         SessionManager.singleton.StartClient();
     }
+    void Update()
+    {
+        // Eğer ESC tuşuna basılırsa, mouse tekrar görünür hale gelir.
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
 
 }
