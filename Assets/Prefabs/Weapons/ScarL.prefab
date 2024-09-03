@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1571734368412362133}
   - component: {fileID: 7778008274600913403}
+  - component: {fileID: 1981483355298236492}
+  - component: {fileID: 3162924694171636450}
   m_Layer: 0
   m_Name: ScarL
   m_TagString: Untagged
@@ -63,6 +65,54 @@ MonoBehaviour:
   _flash: {fileID: 4750213779859310993}
   _projectile: {fileID: 7104789598548574155, guid: f67221205662e6441a0e9e21e4f161ea,
     type: 3}
+--- !u!65 &1981483355298236492
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632932988126000763}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.08870974, y: 0.3102517, z: 0.8453634}
+  m_Center: {x: -0.0057098195, y: -0.050246507, z: -0.054479018}
+--- !u!54 &3162924694171636450
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632932988126000763}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &4947286042150858442
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,7 +249,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AR_SCARL.3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1449534955556801517, guid: f522c54373a647145bb732bdcd16f5ef, type: 3}
+    - {fileID: 182730868478606684, guid: f522c54373a647145bb732bdcd16f5ef, type: 3}
+    - {fileID: -5042587528849330215, guid: f522c54373a647145bb732bdcd16f5ef, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 704820005911797738, guid: f522c54373a647145bb732bdcd16f5ef,
@@ -433,7 +486,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: MAG_ARSMG_2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4570093517167700989, guid: 092e43ccabfe6944caa7ab4a1ecd69aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

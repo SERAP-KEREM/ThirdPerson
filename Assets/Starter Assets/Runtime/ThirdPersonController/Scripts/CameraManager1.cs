@@ -35,8 +35,9 @@ public class CameraManager1 : MonoBehaviour
     private bool _aiming = false; public bool aiming { get { return _aiming; } set { _aiming = value; } }
 
     private Vector3 _aimTargetPoint = Vector3.zero; public Vector3 aimTargetPoint { get { return _aimTargetPoint; } }
+    private Transform _aimTargetObject = null; public Transform aimTargetObject { get { return _aimTargetObject; } }
 
-    public float sensitivity { get { return _aiming ? _aimingSensitivity : defaultSensitivity; } }
+    public float sensitivity { get { return _aiming ? _aimingSensitivity : _defaultSensitivity; } }
     private void Awake()
     {
         _cameraBrain.m_DefaultBlend.m_Time = 0.1f;
@@ -44,6 +45,7 @@ public class CameraManager1 : MonoBehaviour
     private void Update()
     {
         _aimingCamera.gameObject.SetActive(_aiming);
+        SetAimTarget();
     }
 
     private void SetAimTarget()
@@ -52,10 +54,12 @@ public class CameraManager1 : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f, _aimLayer))
         {
             _aimTargetPoint = hit.point;
+            _aimTargetObject = hit.transform;
         }
         else
         {
             _aimTargetPoint = ray.GetPoint(1000);
+            _aimTargetObject = null;
         }
     }
 

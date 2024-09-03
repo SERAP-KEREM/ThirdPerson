@@ -62,6 +62,7 @@ public class Character : NetworkBehaviour
 
     private ulong _clientID = 0;
     private bool _initialized = false;
+    private bool _componentsInitialized = false;
 
     private float _moveSpeed = 0; public float moveSpeed { get { return _moveSpeed; } set { _moveSpeed = value; } }
     private float _moveSpeedBlend = 0;
@@ -72,7 +73,7 @@ public class Character : NetworkBehaviour
     private bool _lastAiming = false;
 
 
-    private GameObject _mainCamera;
+   // private GameObject _mainCamera;
     [System.Serializable]
     public struct Data
     {
@@ -123,6 +124,17 @@ public class Character : NetworkBehaviour
 
     private void Awake()
     {
+
+        InitializeComponents();
+
+    }
+
+    private void InitializeComponents()
+    {
+        if (_componentsInitialized)
+        {
+            return;
+        }
         _ragdollColliders = GetComponentsInChildren<Collider>();
         _ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
         if (_ragdollRigidbodies != null)
@@ -144,10 +156,10 @@ public class Character : NetworkBehaviour
         _rigManager = GetComponent<RigManager>();
         _animator = GetComponent<Animator>();
         _fallTimeoutDelta = FallTimeout;
-        _mainCamera = CameraManager1.mainCamera.gameObject;
-
-
+        //_mainCamera = CameraManager1.mainCamera.gameObject;
     }
+
+
     public void InitializeServer(Dictionary<string, int> items, List<string> itemsId, List<string> equippedIds, ulong clientID)
     {
         if (_initialized)
@@ -155,6 +167,7 @@ public class Character : NetworkBehaviour
             return;
         }
         _initialized = true;
+        InitializeComponents();
         _clientID = clientID;
         SetLayer(transform, LayerMask.NameToLayer("NetworkPlayer"));
 
@@ -162,13 +175,15 @@ public class Character : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void InitalizeClientRpc(string itemsJson, string itemsIdJson, string equippedJson, ulong clientID)
+    public void InitalizeClientRpc(string itemsJson, string itemsIdJson, string equippedJson,string itemsOnGroundJson, ulong clientID)
     {
         if (_initialized)
         {
             return;
         }
         _initialized = true;
+        InitializeComponents();
+
         _clientID = clientID;
 
         if (IsOwner)
@@ -183,9 +198,84 @@ public class Character : NetworkBehaviour
         Dictionary<string, int> items = JsonMapper.ToObject<Dictionary<string, int>>(itemsJson);
         List<string> itemsId = JsonMapper.ToObject<List<string>>(itemsIdJson);
         List<string> equippedIds = JsonMapper.ToObject<List<string>>(equippedJson);
+        List<Item.Data> itemsOnGround=JsonMapper.ToObject<List<Item.Data>>(itemsOnGroundJson);
+        InitializeItemsOnGround(itemsOnGround);
         if (items != null && itemsId != null)
         {
             _Initialize(items, itemsId, equippedIds);
+        }
+    }
+
+    private void InitializeItemsOnGround(List<Item.Data> itemsOnGround)
+    {
+        Item[] allItems = FindObjectsByType<Item>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        List<Item> itemsOnGroundInScene = new List<Item>();
+        if (allItems != null)
+        {
+            for (int i = 0; i < allItems.Length; i++)
+            {
+                if (allItems[i].transform.parent == null)
+                {
+                    itemsOnGroundInScene.Add(allItems[i]);
+                }
+            }
+        }
+        for (int i = 0; i < itemsOnGroundInScene.Count; i++)
+        {
+            bool matched = false;
+            for (int j = 0; j < itemsOnGround.Count; j++)
+            {
+                if (itemsOnGroundInScene[i].id == itemsOnGround[j].id)
+                {
+                    itemsOnGroundInScene[i].networkID = itemsOnGround[j].networkID;
+                    itemsOnGroundInScene[i].transform.position = new Vector3(itemsOnGround[j].position[0], itemsOnGround[j].position[1], itemsOnGround[j].position[2]);
+                    itemsOnGroundInScene[i].transform.eulerAngles = new Vector3(itemsOnGround[j].rotation[0], itemsOnGround[j].rotation[1], itemsOnGround[j].rotation[2]);
+                    if (itemsOnGroundInScene[i].GetType() == typeof(Weapon))
+                    {
+                        ((Weapon)itemsOnGroundInScene[i]).ammo = itemsOnGround[j].value;
+
+                    }
+                    else if (itemsOnGroundInScene[i].GetType() == typeof(Ammo))
+                    {
+                        ((Ammo)itemsOnGroundInScene[i]).amount = itemsOnGround[j].value;
+                    }
+                    itemsOnGroundInScene[i].SetOnGroundStatus(true);
+                    itemsOnGround.RemoveAt(j);
+                    matched = true;
+                    break;
+                }
+            }
+            if (matched == false)
+            {
+                Destroy(itemsOnGroundInScene[i].gameObject);
+            }
+        }
+
+
+        for (int i = 0; i < itemsOnGround.Count; i++)
+        {
+            Item prefab = PrefabManager.singleton.GetItemPrefab(itemsOnGround[i].id);
+            if (prefab != null)
+            {
+                Item item = Instantiate(prefab);
+                item.networkID = itemsOnGround[i].networkID;
+                item.Initialize();
+                item.SetOnGroundStatus(true);
+                if (item.GetType() == typeof(Weapon))
+                {
+                    ((Weapon)item).ammo = itemsOnGround[i].value;
+                }
+                else if (item.GetType() == typeof(Ammo))
+                {
+                    ((Ammo)item).amount = itemsOnGround[i].value;
+
+                }
+                item.transform.position = new Vector3(itemsOnGround[i].position[0], itemsOnGround[i].position[1], itemsOnGround[i].position[2]);
+                item.transform.eulerAngles = new Vector3(itemsOnGround[i].rotation[0], itemsOnGround[i].rotation[1], itemsOnGround[i].rotation[2]);
+
+            }
+
+
         }
     }
     [ClientRpc]
@@ -196,6 +286,8 @@ public class Character : NetworkBehaviour
             return;
         }
         _initialized = true;
+        InitializeComponents();
+
         _clientID = clientID;
         if (IsOwner)
         {
@@ -240,8 +332,8 @@ public class Character : NetworkBehaviour
         leftHandWeight = Mathf.Lerp(leftHandWeight - 0.1f, armed && _switchingWeapon == false && !_reloading && (_aiming || (_grounded && _weapon.type == Weapon.Handle.TwoHanded)) ? 1f : 0f, 10f * Time.deltaTime);
 
 
-        _rigManager.aimTarget = _mainCamera.transform.position + _mainCamera.transform.forward * 10f;
-        //  _rigManager.aimTarget = _aimTarget;
+      //  _rigManager.aimTarget = _mainCamera.transform.position + _mainCamera.transform.forward * 10f;
+          _rigManager.aimTarget = _aimTarget;
         _rigManager.aimWeight = aimRigWeight;
         _rigManager.leftHandWeight = leftHandWeight;
 
@@ -394,6 +486,7 @@ public class Character : NetworkBehaviour
 
     private void _Initialize(Dictionary<string, int> items,List<string> itemsId, List<string> equippedIds)
     {
+        InitializeComponents();
         if (items != null && PrefabManager.singleton != null)
         {
             int i = 0;
@@ -405,6 +498,8 @@ public class Character : NetworkBehaviour
                 if (prefab != null)
                 {
                      Item item = Instantiate(prefab, transform);
+                    item.Initialize();
+                    item.SetOnGroundStatus(false);
                      item.networkID = itemsId[i];
                     if (item.GetType() == typeof(Weapon))
                         {
@@ -872,9 +967,9 @@ public class Character : NetworkBehaviour
     private List<string> _shots= new List<string>();    
     public bool Shoot() 
     {
-        Vector3 target = _mainCamera.transform.position + _mainCamera.transform.forward * 10f;
+        //Vector3 target = _mainCamera.transform.position + _mainCamera.transform.forward * 10f;
         
-        if (weapon && !reloading && _aiming && _weapon.Shoot(this, target))
+        if (weapon && !reloading && _aiming && _weapon.Shoot(this, _aimTarget))
         {
             if (IsOwner)
             {
@@ -921,7 +1016,102 @@ public class Character : NetworkBehaviour
         }
     }
 
-        private void OnFootstep(AnimationEvent animationEvent)
+    private bool _pickingItem=false;
+    public void PickupItem(string networkID)
+    {
+        if(_pickingItem)
+        {
+            return;
+        }
+        _pickingItem = true;
+        PickupItemServerRpc(networkID);
+    }
+
+
+    [ServerRpc]
+    private void PickupItemServerRpc(string networkID, ServerRpcParams serverRpcParams = default)
+    {
+
+        bool success = false;
+        Item[] allItems = FindObjectsByType<Item>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        if (allItems != null)
+        {
+            for (int i = 0; i < allItems.Length; i++)
+            {
+                if (allItems[i].transform.parent == null && allItems[i].networkID == networkID)
+                {
+                    AddItamToInventory(allItems[i]);
+                    success = true;
+                    break;
+                }
+            }
+       
+        }
+        if (success)
+        {
+            PickupItemClientRpc(networkID, true);
+        }
+        else
+        {
+            ulong[] target = new ulong[1];
+            target[0] = serverRpcParams.Receive.SenderClientId;
+            ClientRpcParams clientRpcParams = default;
+            clientRpcParams.Send.TargetClientIds = target;
+            PickupItemClientRpc(networkID, false, clientRpcParams);
+
+        }
+    }
+
+
+    [ClientRpc]
+    private void PickupItemClientRpc(string networkID, bool success, ClientRpcParams rpcParams = default)
+    {
+        if (success)
+        {
+            bool found = false;
+
+            Item[] allItems = FindObjectsByType<Item>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            if (allItems != null)
+            {
+                for (int i = 0; i < allItems.Length; i++)
+                {
+                    if (allItems[i].transform.parent == null && allItems[i].networkID == networkID)
+                    {
+                        found = true;
+                        AddItamToInventory(allItems[i]);
+                        break;
+                    }
+                }
+            }
+            if(found==false)
+            {
+                //Problem
+            }
+        }
+        _pickingItem = false;
+    }
+    public void AddItamToInventory(Item item)
+    {
+        item.transform.SetParent(transform);
+        item.Initialize();
+        item.SetOnGroundStatus(false);
+        if (item.GetType()== typeof(Weapon))
+        {
+            Weapon w = (Weapon)item;
+            item.transform.SetParent(_weaponHolder);
+            item.transform.localPosition = w.rightHandPosition;
+            item.transform.localEulerAngles= w.rightHandRotation;
+        }
+        else if (item.GetType() == typeof(Ammo))
+        {
+            
+        }
+        item.gameObject.SetActive(false);
+        _items.Add(item);
+
+    }
+
+    private void OnFootstep(AnimationEvent animationEvent)
     {
       /*  if (animationEvent.animatorClipInfo.weight > 0.5f)
         {
