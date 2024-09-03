@@ -139,7 +139,6 @@ namespace StarterAssets
             //ToDo: Return if not local player
             _mainCamera = CameraManager1.mainCamera.gameObject;
             CameraManager1.playerCamera.m_Follow = CinemachineCameraTarget.transform;
-            CameraManager1.aimingCamera.m_Follow = CinemachineCameraTarget.transform;
 
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
@@ -155,8 +154,16 @@ namespace StarterAssets
 
             JumpAndGravity();
 
-           
-            if (_input.walk)
+            if (_input.holsterWeapon)
+            {
+                if (!_character.reloading && !_character.switchingWeapon)
+{
+                    _character.HolsterWeapon();
+                }
+                _input.holsterWeapon = false;
+            }
+
+                if (_input.walk)
             {
                 _input.walk = false;
                 _character.walking = !_character.walking;
@@ -180,18 +187,20 @@ namespace StarterAssets
                 targetSpeed = RunSpeed;
             }
            
-           Vector3 target = _mainCamera.transform.position + _mainCamera.transform.forward * 10f;
-            if (_input.shoot && armed && !_character.reloading && _character.aiming && _character.weapon.Shoot(_character,target))
+         //  Vector3 target = _mainCamera.transform.position + _mainCamera.transform.forward * 10f;
+            if (_input.shoot)
             {
-                Debug.Log("shoot");
-                _rigManager.ApplyWeaponKick(_character.weapon.handkick, _character.weapon.bodykick);
+                Debug.Log("shoot"); 
+                _character.Shoot();
             }
 
-            if (_input.reload && !_character.reloading)
+            if (_input.reload)
             {
-                Debug.Log("Reload");
+                if (!_character.reloading && !_character.switchingWeapon) 
+                {
+                    _character.Reload();
+                }
                 _input.reload = false;
-                _character.Reload();
             }
 
             if(_input.switchWeapon!=0)
@@ -338,6 +347,7 @@ namespace StarterAssets
                 // Jump
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
+                    _jumpTimeoutDelta = JumpTimeout;
                     _character.Jump();
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
