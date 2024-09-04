@@ -7,6 +7,7 @@ TagManager:
   - CinemachineTarget
   - Projectile
   - Item
+  - Character
   layers:
   - Default
   - TransparentFX

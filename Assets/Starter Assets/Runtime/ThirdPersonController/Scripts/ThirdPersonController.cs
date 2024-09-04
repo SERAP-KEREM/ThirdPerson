@@ -49,11 +49,6 @@ namespace StarterAssets
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
         public float JumpTimeout = 0.50f;
 
-        
-
-    
-
-
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
         public GameObject CinemachineCameraTarget;
@@ -215,26 +210,53 @@ namespace StarterAssets
              _character.aimTarget  = CameraManager1.singleton.aimTargetPoint;
            // _character.aimTarget = _character.transform.position + _character.transform.forward * 10f;
 
+            if(_input.inventory)
+            {
+                CanvasManager.singleton.OpenInventory();
+                _input.inventory = false;
+            }
             float maxPickupDistance = 3f;
             Item itemToPick = null;
+            Character characterToLoot= null;    
 
-            if(CameraManager1.singleton.aimTargetObject != null && CameraManager1.singleton.aimTargetObject.tag=="Item" && Vector3.Distance(CameraManager1.singleton.aimTargetObject.position,transform.position) <= maxPickupDistance)
+            if(CanvasManager.singleton.isInventoryOpen== false && CameraManager1.singleton.aimTargetObject != null)
             {
-                itemToPick = CameraManager1.singleton.aimTargetObject.GetComponent<Item>();
-                if (itemToPick.canBePickedUp == false)
+                if (CameraManager1.singleton.aimTargetObject.tag == "Item" && Vector3.Distance(CameraManager1.singleton.aimTargetObject.position, transform.position) <= maxPickupDistance)
                 {
-                    itemToPick = null;
+                    itemToPick = CameraManager1.singleton.aimTargetObject.GetComponent<Item>();
+                    if (itemToPick !=null && itemToPick.canBePickedUp == false)
+                    {
+                        itemToPick = null;
+                    }
+                }
+
+               else if (CameraManager1.singleton.aimTargetObject.root.tag == "Character" && Vector3.Distance(CameraManager1.singleton.aimTargetObject.position, transform.position) <= maxPickupDistance)
+                {
+                    characterToLoot = CameraManager1.singleton.aimTargetObject.root.GetComponent<Character>();
+                    if (characterToLoot != null && characterToLoot.health>0)
+                    {
+                        characterToLoot = null;
+                    }
                 }
             }
-            if(CanvasManager.singleton.itemToPick != itemToPick)
+
+            if(CanvasManager.singleton.characterToLoot==null && CanvasManager.singleton.itemToPick !=itemToPick)
             {
                 CanvasManager.singleton.itemToPick = itemToPick;
-            } 
+            }
+            else if(CanvasManager.singleton.characterToLoot == null && CanvasManager.singleton.characterToLoot != characterToLoot)
+            {
+                CanvasManager.singleton.characterToLoot = characterToLoot;
+            }
             if(_input.pickupItem)
             {
                 if (CanvasManager.singleton.itemToPick != null)
                 {
                     _character.PickupItem(CanvasManager.singleton.itemToPick.networkID);
+                }
+                else if(CanvasManager.singleton.characterToLoot != null)
+                {
+                    CanvasManager.singleton.OpenInventoryForLoot(CanvasManager.singleton.characterToLoot);
                 }
                 _input.pickupItem = false;
             }
@@ -249,8 +271,8 @@ namespace StarterAssets
             {
                 Vector3 aimTarget = CameraManager1.singleton.aimTargetPoint;
                 aimTarget.y=transform.position.y;
-               // Vector3 aimDirection= (aimTarget-transform.position).normalized;
-                //transform.forward=Vector3.Lerp(transform.forward,aimDirection, AimRotationSpeed* Time.deltaTime);
+                Vector3 aimDirection = (aimTarget - transform.position).normalized;
+                transform.forward = Vector3.Lerp(transform.forward, aimDirection, AimRotationSpeed * Time.deltaTime);
             }
         }
 
@@ -272,14 +294,20 @@ namespace StarterAssets
 
         private void CameraRotation()
         {
+            Vector2 _lookInput = _input.look;
+            if(CanvasManager.singleton.isInventoryOpen)
+            {
+                _lookInput = Vector2.zero;
+            }
+
             // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            if (_lookInput.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetYaw += _input.look.x * CameraManager1.singleton.sensitivity * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.look.y * CameraManager1.singleton.sensitivity * deltaTimeMultiplier;
+                _cinemachineTargetYaw += _lookInput.x * CameraManager1.singleton.sensitivity * deltaTimeMultiplier;
+                _cinemachineTargetPitch += _lookInput.y * CameraManager1.singleton.sensitivity * deltaTimeMultiplier;
             }
 
             // clamp our rotations so our values are limited 360 degrees
