@@ -89,26 +89,36 @@ public class Character : NetworkBehaviour
                 continue;
             }
 
-            int value = 0;
-            if (_items[i].GetType() == typeof(Weapon))
-            {
-                value = ((Weapon)_items[i]).ammo;
-            }
-            else if (_items[i].GetType() == typeof(Ammo))
-            {
-                value = ((Ammo)_items[i]).amount;
-            }
+            int value = _items[i].GetAmount();
 
             data.items.Add(i.ToString(), (_items[i].id, value));
             data.itemsId.Add(_items[i].networkID);
 
-            if (_weapon != null && _items[i] == _weapon)
+            if (_weaponToEquip != null)
             {
-                data.equippedIds.Add(_items[i].networkID);
+                if (_items[i] == _weaponToEquip)
+                {
+                    data.equippedIds.Add(_weaponToEquip.networkID);
+                    for (int j = 0; j < _items.Count; j++)
+                    {
+                        if (_items[i] != null && _items[i].GetType() == typeof(Ammo) && _weaponToEquip.ammoID == _items[i].id)
+                        {
+                            data.equippedIds.Add(_items[i].networkID);
+                            break;
+                        }
+                    }
+                }
             }
-            else if (_ammo != null && _items[i] == _ammo)
+            else
             {
-                data.equippedIds.Add(_items[i].networkID);
+                if (_weapon != null && _items[i] == _weapon)
+                {
+                    data.equippedIds.Add(_items[i].networkID);
+                }
+                else if (_ammo != null && _items[i] == _ammo)
+                {
+                    data.equippedIds.Add(_items[i].networkID);
+                }
             }
         }
         return data;
@@ -218,14 +228,7 @@ public class Character : NetworkBehaviour
                     itemsOnGroundInScene[i].networkID = itemsOnGround[j].networkID;
                     itemsOnGroundInScene[i].transform.position = new Vector3(itemsOnGround[j].position[0], itemsOnGround[j].position[1], itemsOnGround[j].position[2]);
                     itemsOnGroundInScene[i].transform.eulerAngles = new Vector3(itemsOnGround[j].rotation[0], itemsOnGround[j].rotation[1], itemsOnGround[j].rotation[2]);
-                    if (itemsOnGroundInScene[i].GetType() == typeof(Weapon))
-                    {
-                        ((Weapon)itemsOnGroundInScene[i]).ammo = itemsOnGround[j].value;
-                    }
-                    else if (itemsOnGroundInScene[i].GetType() == typeof(Ammo))
-                    {
-                        ((Ammo)itemsOnGroundInScene[i]).amount = itemsOnGround[j].value;
-                    }
+                    itemsOnGroundInScene[i].SetAmount(itemsOnGround[j].value);
                     itemsOnGroundInScene[i].SetOnGroundStatus(true);
                     itemsOnGround.RemoveAt(j);
                     matched = true;
@@ -246,14 +249,7 @@ public class Character : NetworkBehaviour
                 item.networkID = itemsOnGround[i].networkID;
                 item.Initialize();
                 item.SetOnGroundStatus(true);
-                if (item.GetType() == typeof(Weapon))
-                {
-                    ((Weapon)item).ammo = itemsOnGround[i].value;
-                }
-                else if (item.GetType() == typeof(Ammo))
-                {
-                    ((Ammo)item).amount = itemsOnGround[i].value;
-                }
+                item.SetAmount(itemsOnGround[i].value);
                 item.transform.position = new Vector3(itemsOnGround[i].position[0], itemsOnGround[i].position[1], itemsOnGround[i].position[2]);
                 item.transform.eulerAngles = new Vector3(itemsOnGround[i].rotation[0], itemsOnGround[i].rotation[1], itemsOnGround[i].rotation[2]);
             }
@@ -487,13 +483,13 @@ public class Character : NetworkBehaviour
                     item.Initialize();
                     item.SetOnGroundStatus(false);
                     item.networkID = itemsId[i];
+                    item.SetAmount(itemData.Value.Item2);
                     if (item.GetType() == typeof(Weapon))
                     {
                         Weapon w = (Weapon)item;
                         item.transform.SetParent(_weaponHolder);
                         item.transform.localPosition = w.rightHandPosition;
                         item.transform.localEulerAngles = w.rightHandRotation;
-                        w.ammo = itemData.Value.Item2;
                         if (equippedIds.Contains(item.networkID) || equippedWeaponIndex < 0)
                         {
                             equippedWeaponIndex = i;
@@ -502,7 +498,6 @@ public class Character : NetworkBehaviour
                     else if (item.GetType() == typeof(Ammo))
                     {
                         Ammo a = (Ammo)item;
-                        a.amount = itemData.Value.Item2;
                         if (equippedIds.Contains(item.networkID))
                         {
                             equippedAmmoIndex = i;
@@ -1059,7 +1054,7 @@ public class Character : NetworkBehaviour
                             }
                         }
                     }
-                    AddItamToInventoryLocally(allItems[i], merge);
+                    AddItemToInventoryLocally(allItems[i], merge);
                     success = true;
                     break;
                 }
@@ -1105,7 +1100,7 @@ public class Character : NetworkBehaviour
                                 }
                             }
                         }
-                        AddItamToInventoryLocally(allItems[i], merge);
+                        AddItemToInventoryLocally(allItems[i], merge);
                         break;
                     }
                 }
@@ -1118,7 +1113,7 @@ public class Character : NetworkBehaviour
         _pickingItem = false;
     }
 
-    public void AddItamToInventoryLocally(Item item, Item merge = null)
+    public void AddItemToInventoryLocally(Item item, Item merge = null)
     {
         if (item == null || _items.Contains(item))
         {
@@ -1129,10 +1124,7 @@ public class Character : NetworkBehaviour
         {
             if (merge.GetType() == item.GetType())
             {
-                if (item.GetType() == typeof(Ammo))
-                {
-                    ((Ammo)merge).amount += ((Ammo)item).amount;
-                }
+                merge.AddAmount(item.GetAmount());
                 Destroy(item.gameObject);
             }
             else
@@ -1159,10 +1151,9 @@ public class Character : NetworkBehaviour
                     _EquipAmmo((Ammo)item);
                 }
             }
+            item.gameObject.SetActive(false);
+            _items.Add(item);
         }
-
-        item.gameObject.SetActive(false);
-        _items.Add(item);
     }
 
     public void RemoveItemFromInventoryLocally(Item item)
@@ -1247,30 +1238,28 @@ public class Character : NetworkBehaviour
                 {
                     int count = item.Value;
                     int remained = 0;
-                    if (_items[i].GetType() == typeof(Ammo))
-                    {
-                        Ammo ammo = (Ammo)_items[i];
-                        if (count <= 0)
-                        {
-                            break;
-                        }
-                        else if (ammo.amount < count)
-                        {
-                            count = ammo.amount;
-                        }
-                        else if (ammo.amount > count)
-                        {
-                            remained = ammo.amount - count;
-                            ammo.amount = count;
-                        }
-                    }
-                    else if (_items[i].GetType() == typeof(Weapon))
+                    int c = 0;
+                    if (_items[i].GetType() == typeof(Weapon))
                     {
                         count = ((Weapon)_items[i]).ammo;
                     }
                     else
                     {
-                        count = 1;
+                        c = _items[i].GetAmount();
+                        if (count <= 0)
+                        {
+                            break;
+                        }
+                        else if (c < count)
+                        {
+                            count = c;
+                        }
+                        else if (c > count)
+                        {
+                            remained = c - count;
+                            c = count;
+                            _items[i].SetAmount(c);
+                        }
                     }
                     if (remained > 0)
                     {
@@ -1279,11 +1268,8 @@ public class Character : NetworkBehaviour
                         {
                             Item splitItem = Instantiate(prefab, transform);
                             splitItem.networkID = System.Guid.NewGuid().ToString();
-                            if (splitItem.GetType() == typeof(Ammo))
-                            {
-                                ((Ammo)splitItem).amount = remained;
-                            }
-                            AddItamToInventoryLocally(splitItem);
+                            splitItem.SetAmount(remained);
+                            AddItemToInventoryLocally(splitItem);
                             splitItems.Add(splitItem.networkID, (_items[i].id, remained));
                         }
                         else
@@ -1317,14 +1303,7 @@ public class Character : NetworkBehaviour
             {
                 if (_items[i].networkID == item.Key)
                 {
-                    if (_items[i].GetType() == typeof(Ammo))
-                    {
-                        ((Ammo)_items[i]).amount = item.Value;
-                    }
-                    else if (_items[i].GetType() == typeof(Weapon))
-                    {
-                        ((Weapon)_items[i]).ammo = item.Value;
-                    }
+                    _items[i].SetAmount(item.Value);
                     _DropItem(_items[i]);
                     found = true;
                     break;
@@ -1342,11 +1321,8 @@ public class Character : NetworkBehaviour
             {
                 Item splitItem = Instantiate(prefab, transform);
                 splitItem.networkID = item.Key;
-                if (item.Key.GetType() == typeof(Ammo))
-                {
-                    ((Ammo)splitItem).amount = item.Value.Item2;
-                }
-                AddItamToInventoryLocally(splitItem);
+                splitItem.SetAmount(item.Value.Item2);
+                AddItemToInventoryLocally(splitItem);
             }
         }
     }

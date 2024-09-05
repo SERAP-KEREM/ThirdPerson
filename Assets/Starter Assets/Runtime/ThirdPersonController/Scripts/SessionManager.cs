@@ -22,10 +22,25 @@ public class SessionManager : NetworkBehaviour
 
     private Dictionary<ulong, Character> _characters = new Dictionary<ulong, Character>();
 
+    private static Role _role = Role.Client; public static Role role { get { return _role; } set { _role = value; } }
+
+    public enum Role
+    {
+        Server = 1, Client = 2
+    }
+
     public void StartServer()
     {
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         NetworkManager.Singleton.StartServer();
+        Item[] allItems = FindObjectsByType<Item>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        if (allItems != null)
+        {
+            for (int i = 0; i < allItems.Length; i++)
+            {
+                allItems[i].ServerInitialize();
+            }
+        }
     }
 
     private void OnClientConnected(ulong clientId)
@@ -116,6 +131,14 @@ public class SessionManager : NetworkBehaviour
         NetworkManager.Singleton.StartClient();
     }
 
+    [System.Serializable]
+    public struct TradeItemData
+    {
+        public Item.Data item;
+        public bool merge;
+        public string mergeID;
+    }
+
     public void TradeItemsBetweenCharacters(Character character1, Character character2, Dictionary<Item, int> character1To2Items, Dictionary<Item, int> character2To1Items)
     {
         if (character1 == null || character2 == null || character1 == character2)
@@ -180,12 +203,16 @@ public class SessionManager : NetworkBehaviour
 
         Dictionary<string, int> serializable1To2 = JsonMapper.ToObject<Dictionary<string, int>>(character1To2Json);
         Dictionary<string, int> serializable2To1 = JsonMapper.ToObject<Dictionary<string, int>>(charactre2To1Json);
-
+        /*
         Dictionary<string, int> items1To2 = new Dictionary<string, int>();
         Dictionary<string, (string, int)> splitItems1 = new Dictionary<string, (string, int)>();
-
         Dictionary<string, int> items2To1 = new Dictionary<string, int>();
         Dictionary<string, (string, int)> splitItems2 = new Dictionary<string, (string, int)>();
+        */
+        List<TradeItemData> items1To2 = new List<TradeItemData>();
+        List<Item.Data> splitItems1 = new List<Item.Data>();
+        List<TradeItemData> items2To1 = new List<TradeItemData>();
+        List<Item.Data> splitItems2 = new List<Item.Data>();
 
         foreach (var item in serializable1To2)
         {
@@ -195,30 +222,28 @@ public class SessionManager : NetworkBehaviour
                 {
                     int count = item.Value;
                     int remained = 0;
-                    if (character1.inventory[i].GetType() == typeof(Ammo))
-                    {
-                        Ammo ammo = (Ammo)character1.inventory[i];
-                        if (count <= 0)
-                        {
-                            break;
-                        }
-                        else if (ammo.amount < count)
-                        {
-                            count = ammo.amount;
-                        }
-                        else if (ammo.amount > count)
-                        {
-                            remained = ammo.amount - count;
-                            ammo.amount = count;
-                        }
-                    }
-                    else if (character1.inventory[i].GetType() == typeof(Weapon))
+                    int c = 0;
+                    if (character1.inventory[i].GetType() == typeof(Weapon))
                     {
                         count = ((Weapon)character1.inventory[i]).ammo;
                     }
                     else
                     {
-                        count = 1;
+                        c = character1.inventory[i].GetAmount();
+                        if (count <= 0)
+                        {
+                            break;
+                        }
+                        else if (c < count)
+                        {
+                            count = c;
+                        }
+                        else if (c > count)
+                        {
+                            remained = c - count;
+                            c = count;
+                            character1.inventory[i].SetAmount(c);
+                        }
                     }
                     if (remained > 0)
                     {
@@ -227,21 +252,43 @@ public class SessionManager : NetworkBehaviour
                         {
                             Item splitItem = Instantiate(prefab, transform);
                             splitItem.networkID = System.Guid.NewGuid().ToString();
-                            if (splitItem.GetType() == typeof(Ammo))
-                            {
-                                ((Ammo)splitItem).amount = remained;
-                            }
-                            character1.AddItamToInventoryLocally(splitItem);
-                            splitItems1.Add(splitItem.networkID, (character1.inventory[i].id, remained));
+                            splitItem.SetAmount(remained);
+                            character1.AddItemToInventoryLocally(splitItem);
+                            splitItems1.Add(splitItem.GetData());
                         }
                         else
                         {
                             break;
                         }
                     }
-                    character2.AddItamToInventoryLocally(character1.inventory[i]);
+
+                    Item merge = null;
+                    for (int j = 0; j < character2.inventory.Count; j++)
+                    {
+                        if (character2.inventory[j].id == character1.inventory[i].id)
+                        {
+                            merge = character2.inventory[j];
+                            break;
+                        }
+                    }
+
+                    character2.AddItemToInventoryLocally(character1.inventory[i], merge);
+
+                    TradeItemData data = new TradeItemData();
+                    data.item = character1.inventory[i].GetData();
+                    data.item.value = count;
+                    if (merge == null)
+                    {
+                        data.merge = false;
+                    }
+                    else
+                    {
+                        data.merge = true;
+                        data.mergeID = merge.networkID;
+                    }
+                    items1To2.Add(data);
+
                     character1.RemoveItemFromInventoryLocally(character1.inventory[i]);
-                    items1To2.Add(item.Key, count);
                     break;
                 }
             }
@@ -255,30 +302,28 @@ public class SessionManager : NetworkBehaviour
                 {
                     int count = item.Value;
                     int remained = 0;
-                    if (character2.inventory[i].GetType() == typeof(Ammo))
-                    {
-                        Ammo ammo = (Ammo)character2.inventory[i];
-                        if (count <= 0)
-                        {
-                            break;
-                        }
-                        else if (ammo.amount < count)
-                        {
-                            count = ammo.amount;
-                        }
-                        else if (ammo.amount > count)
-                        {
-                            remained = ammo.amount - count;
-                            ammo.amount = count;
-                        }
-                    }
-                    else if (character2.inventory[i].GetType() == typeof(Weapon))
+                    int c = 0;
+                    if (character2.inventory[i].GetType() == typeof(Weapon))
                     {
                         count = ((Weapon)character2.inventory[i]).ammo;
                     }
                     else
                     {
-                        count = 1;
+                        c = character2.inventory[i].GetAmount();
+                        if (count <= 0)
+                        {
+                            break;
+                        }
+                        else if (c < count)
+                        {
+                            count = c;
+                        }
+                        else if (c > count)
+                        {
+                            remained = c - count;
+                            c = count;
+                            character2.inventory[i].SetAmount(c);
+                        }
                     }
                     if (remained > 0)
                     {
@@ -287,21 +332,43 @@ public class SessionManager : NetworkBehaviour
                         {
                             Item splitItem = Instantiate(prefab, transform);
                             splitItem.networkID = System.Guid.NewGuid().ToString();
-                            if (splitItem.GetType() == typeof(Ammo))
-                            {
-                                ((Ammo)splitItem).amount = remained;
-                            }
-                            character2.AddItamToInventoryLocally(splitItem);
-                            splitItems2.Add(splitItem.networkID, (character2.inventory[i].id, remained));
+                            splitItem.SetAmount(remained);
+                            character2.AddItemToInventoryLocally(splitItem);
+                            splitItems2.Add(splitItem.GetData());
                         }
                         else
                         {
                             break;
                         }
                     }
-                    character1.AddItamToInventoryLocally(character2.inventory[i]);
+
+                    Item merge = null;
+                    for (int j = 0; j < character1.inventory.Count; j++)
+                    {
+                        if (character1.inventory[j].id == character2.inventory[i].id)
+                        {
+                            merge = character1.inventory[j];
+                            break;
+                        }
+                    }
+
+                    character1.AddItemToInventoryLocally(character2.inventory[i], merge);
+
+                    TradeItemData data = new TradeItemData();
+                    data.item = character2.inventory[i].GetData();
+                    data.item.value = count;
+                    if (merge == null)
+                    {
+                        data.merge = false;
+                    }
+                    else
+                    {
+                        data.merge = true;
+                        data.mergeID = merge.networkID;
+                    }
+                    items2To1.Add(data);
+
                     character2.RemoveItemFromInventoryLocally(character2.inventory[i]);
-                    items2To1.Add(item.Key, count);
                     break;
                 }
             }
@@ -346,27 +413,39 @@ public class SessionManager : NetworkBehaviour
             return;
         }
 
-        Dictionary<string, int> items1To2 = JsonMapper.ToObject<Dictionary<string, int>>(json1To2);
-        Dictionary<string, (string, int)> splitItems1 = JsonMapper.ToObject<Dictionary<string, (string, int)>>(json1Split);
-        Dictionary<string, int> items2To1 = JsonMapper.ToObject<Dictionary<string, int>>(json2To1);
-        Dictionary<string, (string, int)> splitItems2 = JsonMapper.ToObject<Dictionary<string, (string, int)>>(json2Split);
+        List<TradeItemData> items1To2 = JsonMapper.ToObject<List<TradeItemData>>(json1To2);
+        List<Item.Data> splitItems1 = JsonMapper.ToObject<List<Item.Data>>(json1Split);
+        List<TradeItemData> items2To1 = JsonMapper.ToObject<List<TradeItemData>>(json2To1);
+        List<Item.Data> splitItems2 = JsonMapper.ToObject<List<Item.Data>>(json2Split);
+
 
         foreach (var item in items1To2)
         {
             bool found = false;
             for (int i = 0; i < character1.inventory.Count; i++)
             {
-                if (character1.inventory[i].networkID == item.Key)
+                if (character1.inventory[i].networkID == item.item.networkID)
                 {
-                    if (character1.inventory[i].GetType() == typeof(Ammo))
+                    character1.inventory[i].SetAmount(item.item.value);
+
+                    Item merge = null;
+                    if (item.merge && string.IsNullOrEmpty(item.mergeID) == false)
                     {
-                        ((Ammo)character1.inventory[i]).amount = item.Value;
+                        for (int j = 0; j < character2.inventory.Count; j++)
+                        {
+                            if (character2.inventory[j].networkID == item.mergeID)
+                            {
+                                merge = character2.inventory[j];
+                                break;
+                            }
+                        }
+                        if (merge == null)
+                        {
+                            // Problem
+                        }
                     }
-                    else if (character1.inventory[i].GetType() == typeof(Weapon))
-                    {
-                        ((Weapon)character1.inventory[i]).ammo = item.Value;
-                    }
-                    character2.AddItamToInventoryLocally(character1.inventory[i]);
+
+                    character2.AddItemToInventoryLocally(character1.inventory[i], merge);
                     character1.RemoveItemFromInventoryLocally(character1.inventory[i]);
                     found = true;
                     break;
@@ -380,16 +459,13 @@ public class SessionManager : NetworkBehaviour
 
         foreach (var item in splitItems1)
         {
-            Item prefab = PrefabManager.singleton.GetItemPrefab(item.Value.Item1);
+            Item prefab = PrefabManager.singleton.GetItemPrefab(item.id);
             if (prefab != null)
             {
                 Item splitItem = Instantiate(prefab, transform);
-                splitItem.networkID = item.Key;
-                if (item.Key.GetType() == typeof(Ammo))
-                {
-                    ((Ammo)splitItem).amount = item.Value.Item2;
-                }
-                character1.AddItamToInventoryLocally(splitItem);
+                splitItem.networkID = item.networkID;
+                splitItem.SetAmount(item.value);
+                character1.AddItemToInventoryLocally(splitItem);
             }
         }
 
@@ -398,17 +474,28 @@ public class SessionManager : NetworkBehaviour
             bool found = false;
             for (int i = 0; i < character2.inventory.Count; i++)
             {
-                if (character2.inventory[i].networkID == item.Key)
+                if (character2.inventory[i].networkID == item.item.networkID)
                 {
-                    if (character2.inventory[i].GetType() == typeof(Ammo))
+                    character2.inventory[i].SetAmount(item.item.value);
+
+                    Item merge = null;
+                    if (item.merge && string.IsNullOrEmpty(item.mergeID) == false)
                     {
-                        ((Ammo)character2.inventory[i]).amount = item.Value;
+                        for (int j = 0; j < character1.inventory.Count; j++)
+                        {
+                            if (character1.inventory[j].networkID == item.mergeID)
+                            {
+                                merge = character1.inventory[j];
+                                break;
+                            }
+                        }
+                        if (merge == null)
+                        {
+                            // Problem
+                        }
                     }
-                    else if (character2.inventory[i].GetType() == typeof(Weapon))
-                    {
-                        ((Weapon)character2.inventory[i]).ammo = item.Value;
-                    }
-                    character1.AddItamToInventoryLocally(character2.inventory[i]);
+
+                    character1.AddItemToInventoryLocally(character2.inventory[i], merge);
                     character2.RemoveItemFromInventoryLocally(character2.inventory[i]);
                     found = true;
                     break;
@@ -422,16 +509,42 @@ public class SessionManager : NetworkBehaviour
 
         foreach (var item in splitItems2)
         {
-            Item prefab = PrefabManager.singleton.GetItemPrefab(item.Value.Item1);
+            Item prefab = PrefabManager.singleton.GetItemPrefab(item.id);
             if (prefab != null)
             {
                 Item splitItem = Instantiate(prefab, transform);
-                splitItem.networkID = item.Key;
-                if (item.Key.GetType() == typeof(Ammo))
+                splitItem.networkID = item.networkID;
+                splitItem.SetAmount(item.value);
+                character2.AddItemToInventoryLocally(splitItem);
+            }
+        }
+    }
+
+    public void UpdateItemPosition(Item item)
+    {
+        if (item != null)
+        {
+            Item.Data data = item.GetData();
+            string json = JsonMapper.ToJson(data);
+            UpdateItemPositionClientRpc(json);
+        }
+    }
+
+    [ClientRpc]
+    private void UpdateItemPositionClientRpc(string itemJson)
+    {
+        Item.Data data = JsonMapper.ToObject<Item.Data>(itemJson);
+        Item[] allItems = FindObjectsByType<Item>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        if (allItems != null)
+        {
+            for (int i = 0; i < allItems.Length; i++)
+            {
+                if (allItems[i].networkID == data.networkID)
                 {
-                    ((Ammo)splitItem).amount = item.Value.Item2;
+                    allItems[i].transform.position = new Vector3(data.position[0], data.position[1], data.position[2]);
+                    allItems[i].transform.eulerAngles = new Vector3(data.rotation[0], data.rotation[1], data.rotation[2]);
+                    break;
                 }
-                character2.AddItamToInventoryLocally(splitItem);
             }
         }
     }

@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CanvasManager : MonoBehaviour
 {
-    [SerializeField] private Button _serverButton = null;
-    [SerializeField] private Button _clientButton = null;
 
     [Header("Pickup Box")]
     [SerializeField] public GameObject _itemPickupPanel = null;
@@ -37,14 +35,11 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI _inventoryGridTitle1 = null;
     [SerializeField] public TextMeshProUGUI _inventoryGridTitle2 = null;
 
-
     private static CanvasManager _singleton = null;
-
     public static CanvasManager singleton
     {
         get
         {
-
             if (_singleton == null)
             {
                 _singleton = FindFirstObjectByType<CanvasManager>();
@@ -53,15 +48,12 @@ public class CanvasManager : MonoBehaviour
         }
     }
 
-
     private Item _itemToPick = null; public Item itemToPick { get { return _itemToPick; } set { _itemToPick = value; OnItemToPickUpdated(); } }
     private Character _characterToLoot = null; public Character characterToLoot { get { return _characterToLoot; } set { _characterToLoot = value; OnCharacterToLootUpdated(); } }
     private Character _characterLootTarget = null;
 
-
     private Vector2 _referenceResolution = new Vector2(1920, 1080);
     private Vector2 _screenScale = new Vector2(1, 1);
-
 
     private List<InventoryItem> _inventoryItems1 = new List<InventoryItem>();
     private List<InventoryItem> _inventoryItems2 = new List<InventoryItem>();
@@ -75,15 +67,8 @@ public class CanvasManager : MonoBehaviour
         _itemLootPanel.gameObject.SetActive(false);
     }
 
-
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
-
-        _serverButton.onClick.AddListener(StartServer);
-        _clientButton.onClick.AddListener(StartClient);
         _inventoryCloseButton.onClick.AddListener(CloseInventory);
 
         _itemPickupBox.anchorMax = Vector2.zero;
@@ -100,16 +85,10 @@ public class CanvasManager : MonoBehaviour
             _referenceResolution = _scaler.referenceResolution;
             _screenScale = new Vector2(_referenceResolution.x / Screen.width, _referenceResolution.y / Screen.height);
         }
-
     }
-  void Update()
+
+    private void Update()
     {
-        // Eğer ESC tuşuna basılırsa, mouse tekrar görünür hale gelir.
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
         if (_itemToPick != null)
         {
             Vector2 position = CameraManager1.mainCamera.WorldToScreenPoint(_itemToPick.transform.position) * _screenScale;
@@ -152,52 +131,22 @@ public class CanvasManager : MonoBehaviour
             }
             _itemLootBox.anchoredPosition = position;
         }
-
-    }
-    private void StartServer()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
-        _serverButton.gameObject.SetActive(false);
-        _clientButton.gameObject.SetActive(false);
-        SessionManager.singleton.StartServer();
     }
 
-    private void StartClient()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
-        _serverButton.gameObject.SetActive(false);
-        _clientButton.gameObject.SetActive(false);
-        SessionManager.singleton.StartClient();
-    }
-  
     private void OnItemToPickUpdated()
     {
         if (_itemToPick != null)
         {
             _itemPickupName.text = _itemToPick.id;
-            if (_itemToPick.GetType() == typeof(Ammo))
-            {
-                _itemPickupAmount.text = "x" + ((Ammo)_itemToPick).amount.ToString();
-
-            }
-            else
-            {
-                _itemPickupAmount.text = "x1";
-
-            }
+            _itemPickupAmount.text = "x" + _itemToPick.GetAmount().ToString();
             _itemPickupPanel.gameObject.SetActive(true);
-
         }
         else
         {
             _itemPickupPanel.gameObject.SetActive(false);
-
         }
     }
+
     private void OnCharacterToLootUpdated()
     {
         if (_characterToLoot != null)
@@ -210,6 +159,7 @@ public class CanvasManager : MonoBehaviour
             _itemLootPanel.gameObject.SetActive(false);
         }
     }
+
     public void CloseInventory()
     {
         if (_isInventoryOpen == false)
@@ -259,6 +209,7 @@ public class CanvasManager : MonoBehaviour
             }
         }
 
+        _characterLootTarget = null;
         _isInventoryOpen = false;
         Cursor.lockState = CursorLockMode.Locked;
         _inventoryPanel.gameObject.SetActive(false);
@@ -277,6 +228,10 @@ public class CanvasManager : MonoBehaviour
             _inventoryGridTitle2.text = "On Ground";
             for (int i = 0; i < Character.localPlayer.inventory.Count; i++)
             {
+                if (Character.localPlayer.inventory[i].GetType() != typeof(Weapon) && Character.localPlayer.inventory[i].GetAmount() <= 0)
+                {
+                    continue;
+                }
                 InventoryItem item = Instantiate(_inventoryItemPrefab, _inventoryGrid1);
                 item.Initialize(Character.localPlayer.inventory[i]);
                 _inventoryItems1.Add(item);
@@ -302,12 +257,20 @@ public class CanvasManager : MonoBehaviour
             _inventoryGridTitle2.text = "Player" + lootTarget.clientID.ToString();
             for (int i = 0; i < Character.localPlayer.inventory.Count; i++)
             {
+                if (Character.localPlayer.inventory[i].GetType() != typeof(Weapon) && Character.localPlayer.inventory[i].GetAmount() <= 0)
+                {
+                    continue;
+                }
                 InventoryItem item = Instantiate(_inventoryItemPrefab, _inventoryGrid1);
                 item.Initialize(Character.localPlayer.inventory[i]);
                 _inventoryItems1.Add(item);
             }
             for (int i = 0; i < _characterLootTarget.inventory.Count; i++)
             {
+                if (_characterLootTarget.inventory[i].GetType() != typeof(Weapon) && _characterLootTarget.inventory[i].GetAmount() <= 0)
+                {
+                    continue;
+                }
                 InventoryItem item = Instantiate(_inventoryItemPrefab, _inventoryGrid2);
                 item.Initialize(_characterLootTarget.inventory[i]);
                 _inventoryItems2.Add(item);
