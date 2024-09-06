@@ -5,6 +5,7 @@ namespace DevelopersHub.RealtimeNetworking.Client
 
     public class Data
     {
+
         public class Player
         {
             public long id = 0;
@@ -21,9 +22,6 @@ namespace DevelopersHub.RealtimeNetworking.Client
             public long id = 0;
             public string username = string.Empty;
             public int coins = 0;
-            public int score = 0;
-            public int level = 1;
-            public int xp = 0;
             public bool online = false;
             public DateTime login;
         }
@@ -79,18 +77,12 @@ namespace DevelopersHub.RealtimeNetworking.Client
 
         public class Game
         {
-            public Room room = null;
+            public Data.Room room = null;
             public DateTime start;
             public GameType type = GameType.HOSTED;
             public Extension extension = Extension.NONE;
-            public GameCustomData customData = new GameCustomData();
             public List<int> sceneHostsKeys = new List<int>();
             public List<long> sceneHostsValues = new List<long>();
-        }
-
-        public class GameCustomData
-        {
-
         }
 
         public enum Extension
@@ -100,48 +92,17 @@ namespace DevelopersHub.RealtimeNetworking.Client
 
         public class RuntimeEquipment
         {
-            public long id = 0;
-            public long characterID = 0;
-            public int prefabID = 0;
-            public int type = 0;
             public string name = string.Empty;
-            public string customName = string.Empty;
-            public string tag = string.Empty;
-            public int level = 1;
-            public double armor = 0;
-            public double damage = 0;
-            public double accuracy = 0;
-            public double range = 0;
-            public double speed = 0;
-            public double weight = 0;
-            public int capacity = 0;
         }
 
         public class RuntimeCharacter
         {
-            public long id = 0;
-            public int prefabID = 0;
             public string name = string.Empty;
-            public string customName = string.Empty;
-            public string tag = string.Empty;
-            public bool selected = false;
-            public int xp = 0;
-            public int level = 1;
-            public double health = 100;
-            public double damage = 0;
-            public double speed = 0;
-            public int strength = 0;
-            public int agility = 0;
-            public int constitution = 0;
-            public int dexterity = 0;
-            public int vitality = 0;
-            public int endurance = 0;
-            public int intelligence = 0;
-            public int wisdom = 0;
-            public int charisma = 0;
-            public int perception = 0;
-            public int luck = 0;
-            public int willpower = 0;
+            public int health = 100;
+            public int totalDamageDealt = 0;
+            public int kills = 0;
+            public int assists = 0;
+            public int deaths = 0;
             public List<RuntimeEquipment> equipments = new List<RuntimeEquipment>();
         }
 
@@ -165,19 +126,6 @@ namespace DevelopersHub.RealtimeNetworking.Client
         {
             public double duration = 0;
             public RuntimeGame game = null;
-        }
-
-        public class Color
-        {
-            public float r;
-            public float g;
-            public float b;
-            public float a;
-        }
-
-        public enum PurchaseResult
-        {
-            Unknown = 0, Successful = 1, InsufficientFunds = 2, NotAvailable = 3
         }
 
     }

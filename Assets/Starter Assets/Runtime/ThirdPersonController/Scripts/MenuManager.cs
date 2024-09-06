@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DevelopersHub.RealtimeNetworking.Client;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -44,8 +45,9 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-
     #region Client
+    private bool _startingMatch = false;
+
     private void ClientAwake()
     {
         _matchmakingText.text = "";
@@ -55,7 +57,43 @@ public class MenuManager : MonoBehaviour
         RealtimeNetworking.OnConnectingToServerResult += OnConnectingToServerResult;
         RealtimeNetworking.OnDisconnectedFromServer += OnDisconnected;
         RealtimeNetworking.OnAuthentication += OnAuthentication;
+        RealtimeNetworking.OnStartMatchmaking += OnStartMatchmaking;
+        RealtimeNetworking.OnStopMatchmaking += OnStopMatchmaking;
+        RealtimeNetworking.OnNetcodeServerReady += OnNetcodeServerReady;
         Connect();
+    }
+
+    private void OnNetcodeServerReady(int port, Data.RuntimeGame gameData)
+    {
+        _startingMatch = true;
+        RealtimeNetworking.Disconnect();
+        SessionManager.port = (ushort)port;
+        if (gameData.mapID == 0)
+        {
+            SceneManager.LoadScene(1);
+        }
+    }
+
+    private void OnStopMatchmaking(RealtimeNetworking.StopMatchmakingResponse response)
+    {
+        if (response == RealtimeNetworking.StopMatchmakingResponse.SUCCESSFULL)
+        {
+            _matchmakingText.text = "";
+            _matchmakingStart.gameObject.SetActive(true);
+            _matchmakingStop.gameObject.SetActive(false);
+        }
+        _matchmakingStop.interactable = true;
+    }
+
+    private void OnStartMatchmaking(RealtimeNetworking.StartMatchmakingResponse response)
+    {
+        if (response == RealtimeNetworking.StartMatchmakingResponse.SUCCESSFULL)
+        {
+            _matchmakingText.text = "Searching ...";
+            _matchmakingStart.gameObject.SetActive(false);
+            _matchmakingStop.gameObject.SetActive(true);
+        }
+        _matchmakingStart.interactable = true;
     }
 
     private void OnAuthentication(RealtimeNetworking.AuthenticationResponse response, Data.PlayerProfile accountData = null)
@@ -77,7 +115,10 @@ public class MenuManager : MonoBehaviour
         _matchmakingStart.gameObject.SetActive(false);
         _matchmakingStop.gameObject.SetActive(false);
         SetConnectionStatus("Disconnected", Color.red);
-        StartCoroutine(Reconnect());
+        if (_startingMatch == false)
+        {
+            StartCoroutine(Reconnect());
+        }
     }
 
     private void OnConnectingToServerResult(bool successful)
@@ -89,7 +130,10 @@ public class MenuManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(Reconnect());
+            if (_startingMatch == false)
+            {
+                StartCoroutine(Reconnect());
+            }
         }
     }
 
@@ -113,12 +157,14 @@ public class MenuManager : MonoBehaviour
 
     private void StartMatchmaking()
     {
-
+        _matchmakingStart.interactable = false;
+        RealtimeNetworking.StartMatchmaking(0, 0, Data.Extension.NETCODE_SERVER);
     }
 
     private void StopMatchmaking()
     {
-
+        _matchmakingStop.interactable = false;
+        RealtimeNetworking.StopMatchmaking();
     }
 
     private void OnDestroy()
@@ -128,6 +174,9 @@ public class MenuManager : MonoBehaviour
             RealtimeNetworking.OnConnectingToServerResult -= OnConnectingToServerResult;
             RealtimeNetworking.OnDisconnectedFromServer -= OnDisconnected;
             RealtimeNetworking.OnAuthentication -= OnAuthentication;
+            RealtimeNetworking.OnStartMatchmaking -= OnStartMatchmaking;
+            RealtimeNetworking.OnStopMatchmaking -= OnStopMatchmaking;
+            RealtimeNetworking.OnNetcodeServerReady -= OnNetcodeServerReady;
         }
     }
     #endregion
@@ -135,7 +184,19 @@ public class MenuManager : MonoBehaviour
     #region Server
     private void ServerAwake()
     {
-
+        Data.RuntimeGame game = RealtimeNetworking.NetcodeGetGameData();
+        if (game != null)
+        {
+            if (game.mapID == 0)
+            {
+                SceneManager.LoadScene(1);
+            }
+        }
+        else
+        {
+            // Problem
+            Application.Quit();
+        }
     }
     #endregion
 

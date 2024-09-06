@@ -3,9 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using LitJson;
+using DevelopersHub.RealtimeNetworking.Client;
+using Unity.Netcode.Transports.UTP;
 
 public class SessionManager : NetworkBehaviour
 {
+
+    private float _destroyServerAfterSecondsIfNoClientConnected = 300;
+    private float _destroyServerAfterSecondsWithoutAnyClient = 120;
+    private float _timer = 0;
+    private int _connectedClients = 0;
+    private bool _atLeastOneClientConnected = false;
+    private bool _closingServer = false;
 
     private static SessionManager _singleton = null;
     public static SessionManager singleton
@@ -23,15 +32,68 @@ public class SessionManager : NetworkBehaviour
     private Dictionary<ulong, Character> _characters = new Dictionary<ulong, Character>();
 
     private static Role _role = Role.Client; public static Role role { get { return _role; } set { _role = value; } }
+    private static ushort _port = 0; public static ushort port { get { return _port; } set { _port = value; } }
 
     public enum Role
     {
         Server = 1, Client = 2
     }
 
+    private void Start()
+    {
+        UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.ConnectionData.Address = Client.instance.settings.ip;
+        if (role == Role.Server)
+        {
+            _port = (ushort)DevelopersHub.RealtimeNetworking.Client.Tools.FindFreeTcpPort();
+            transport.ConnectionData.Port = _port;
+            StartServer();
+        }
+        else
+        {
+            transport.ConnectionData.Port = _port;
+            StartClient();
+        }
+    }
+
+    private void Update()
+    {
+        if (role == Role.Server)
+        {
+            if (_closingServer)
+            {
+                return;
+            }
+            if (_atLeastOneClientConnected)
+            {
+                if (_connectedClients > 0)
+                {
+                    _timer = 0;
+                }
+                else
+                {
+                    _timer += Time.deltaTime;
+                    if (_timer >= _destroyServerAfterSecondsWithoutAnyClient)
+                    {
+                        CloseServer();
+                    }
+                }
+            }
+            else
+            {
+                _destroyServerAfterSecondsIfNoClientConnected -= Time.deltaTime;
+                if (_destroyServerAfterSecondsIfNoClientConnected <= 0)
+                {
+                    CloseServer();
+                }
+            }
+        }
+    }
+
     public void StartServer()
     {
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
         NetworkManager.Singleton.StartServer();
         Item[] allItems = FindObjectsByType<Item>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         if (allItems != null)
@@ -41,10 +103,38 @@ public class SessionManager : NetworkBehaviour
                 allItems[i].ServerInitialize();
             }
         }
+        StartCoroutine(InformClients());
+    }
+
+    private void OnClientDisconnect(ulong obj)
+    {
+        _connectedClients--;
+    }
+
+    private IEnumerator InformClients()
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(2f);
+        RealtimeNetworking.NetcodeServerIsReady(_port);
+    }
+
+    private void CloseServer()
+    {
+        if (_role == Role.Server)
+        {
+            if (_closingServer)
+            {
+                return;
+            }
+            _closingServer = true;
+            RealtimeNetworking.NetcodeCloseServer();
+        }
     }
 
     private void OnClientConnected(ulong clientId)
     {
+        _connectedClients++;
+        _atLeastOneClientConnected = true;
         ulong[] target = new ulong[1];
         target[0] = clientId;
         ClientRpcParams clientRpcParams = default;
@@ -69,7 +159,7 @@ public class SessionManager : NetworkBehaviour
             Vector3 position = new Vector3(UnityEngine.Random.Range(-5f, 5f), 0f, UnityEngine.Random.Range(-5f, 5f));
 
             Character character = Instantiate(prefab, position, Quaternion.identity);
-            character.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
+            character.GetComponent<Unity.Netcode.NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
 
             _characters.Add(serverRpcParams.Receive.SenderClientId, character);
 
