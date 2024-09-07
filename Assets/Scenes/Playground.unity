@@ -2930,7 +2930,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: -3.9496934, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3770,8 +3770,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4c6ab3437a66784fa5ceebde3937ea0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _serverButton: {fileID: 855620141}
-  _clientButton: {fileID: 820275316}
   _itemPickupPanel: {fileID: 1238281875}
   _itemPickupBox: {fileID: 448913819}
   _itemPickupName: {fileID: 1502530056}
