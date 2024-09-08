@@ -170,7 +170,7 @@ public class Character : NetworkBehaviour
         _initialized = true;
         InitializeComponents();
         _clientID = clientID;
-        Tools.SetLayerMask(transform, LayerMask.NameToLayer("NetworkPlayer"));
+        Functions.SetLayerMask(transform, LayerMask.NameToLayer("NetworkPlayer"));
         _Initialize(items, itemsId, equippedIds);
     }
 
@@ -186,12 +186,12 @@ public class Character : NetworkBehaviour
         _clientID = clientID;
         if (IsOwner)
         {
-            Tools.SetLayerMask(transform, LayerMask.NameToLayer("LocalPlayer"));
+            Functions.SetLayerMask(transform, LayerMask.NameToLayer("LocalPlayer"));
             localPlayer = this;
         }
         else
         {
-            Tools.SetLayerMask(transform, LayerMask.NameToLayer("NetworkPlayer"));
+            Functions.SetLayerMask(transform, LayerMask.NameToLayer("NetworkPlayer"));
         }
         Dictionary<string, (string, int)> items = JsonMapper.ToObject<Dictionary<string, (string, int)>>(itemsJson);
         List<string> itemsId = JsonMapper.ToObject<List<string>>(itemsIdJson);
@@ -268,12 +268,12 @@ public class Character : NetworkBehaviour
         _clientID = clientID;
         if (IsOwner)
         {
-            Tools.SetLayerMask(transform, LayerMask.NameToLayer("LocalPlayer"));
+            Functions.SetLayerMask(transform, LayerMask.NameToLayer("LocalPlayer"));
             localPlayer = this;
         }
         else
         {
-            Tools.SetLayerMask(transform, LayerMask.NameToLayer("NetworkPlayer"));
+            Functions.SetLayerMask(transform, LayerMask.NameToLayer("NetworkPlayer"));
         }
         Data data = JsonMapper.ToObject<Data>(dataJson);
         _health = data.health;
@@ -488,8 +488,8 @@ public class Character : NetworkBehaviour
                     {
                         Weapon w = (Weapon)item;
                         item.transform.SetParent(_weaponHolder);
-                        item.transform.localPosition = w.rightHandPosition;
-                        item.transform.localEulerAngles = w.rightHandRotation;
+                        item.transform.localPosition = w.RightHandPosition(_id);
+                        item.transform.localEulerAngles = w.RightHandRotation(_id);
                         if (equippedIds.Contains(item.networkID) || equippedWeaponIndex < 0)
                         {
                             equippedWeaponIndex = i;
@@ -683,10 +683,10 @@ public class Character : NetworkBehaviour
             if (_weapon.transform.parent != _weaponHolder)
             {
                 _weapon.transform.SetParent(_weaponHolder);
-                _weapon.transform.localPosition = _weapon.rightHandPosition;
-                _weapon.transform.localEulerAngles = _weapon.rightHandRotation;
+                _weapon.transform.localPosition = _weapon.RightHandPosition(_id);
+                _weapon.transform.localEulerAngles = _weapon.RightHandRotation(_id);
             }
-            _rigManager.SetLeftHandGripData(_weapon.leftHandPosition, _weapon.leftHandRotation);
+            _rigManager.SetLeftHandGripData(_weapon.LeftHandPosition(_id), _weapon.LeftHandRotation(_id));
             _weapon.gameObject.SetActive(true);
             _ammo = null;
             for (int i = 0; i < _items.Count; i++)
@@ -1141,8 +1141,8 @@ public class Character : NetworkBehaviour
             {
                 Weapon w = (Weapon)item;
                 item.transform.SetParent(_weaponHolder);
-                item.transform.localPosition = w.rightHandPosition;
-                item.transform.localEulerAngles = w.rightHandRotation;
+                item.transform.localPosition = w.RightHandPosition(_id);
+                item.transform.localEulerAngles = w.RightHandRotation(_id);
             }
             else if (item.GetType() == typeof(Ammo))
             {
