@@ -15,6 +15,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI _matchmakingText = null;
     [SerializeField] public Button _matchmakingStart = null;
     [SerializeField] public Button _matchmakingStop = null;
+    [SerializeField] public Button _openCharacters = null;
 
     private static MenuManager _singleton = null;
     public static MenuManager singleton
@@ -33,6 +34,7 @@ public class MenuManager : MonoBehaviour
     {
         _matchmakingStart.gameObject.SetActive(false);
         _matchmakingStop.gameObject.SetActive(false);
+        _openCharacters.gameObject.SetActive(false);
         if (Application.platform == RuntimePlatform.WindowsServer || Application.platform == RuntimePlatform.LinuxServer || Application.platform == RuntimePlatform.OSXServer)
         {
             SessionManager.role = SessionManager.Role.Server;
@@ -54,6 +56,7 @@ public class MenuManager : MonoBehaviour
         _username.text = "";
         _matchmakingStart.onClick.AddListener(StartMatchmaking);
         _matchmakingStop.onClick.AddListener(StopMatchmaking);
+        _openCharacters.onClick.AddListener(OpenCharacters);
         RealtimeNetworking.OnConnectingToServerResult += OnConnectingToServerResult;
         RealtimeNetworking.OnDisconnectedFromServer += OnDisconnected;
         RealtimeNetworking.OnAuthentication += OnAuthentication;
@@ -61,6 +64,11 @@ public class MenuManager : MonoBehaviour
         RealtimeNetworking.OnStopMatchmaking += OnStopMatchmaking;
         RealtimeNetworking.OnNetcodeServerReady += OnNetcodeServerReady;
         Connect();
+    }
+
+    private void OpenCharacters()
+    {
+        CharactersManager.singleton.Open();
     }
 
     private void OnNetcodeServerReady(int port, Data.RuntimeGame gameData)
@@ -101,7 +109,9 @@ public class MenuManager : MonoBehaviour
         if (response == RealtimeNetworking.AuthenticationResponse.SUCCESSFULL)
         {
             _matchmakingStart.gameObject.SetActive(true);
+            _openCharacters.gameObject.SetActive(true);
             _username.text = accountData.username;
+            SessionManager.accountID = accountData.id;
         }
         else
         {

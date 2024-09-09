@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1981483355298236492}
   - component: {fileID: 3162924694171636450}
   m_Layer: 0
-  m_Name: ScarL
+  m_Name: Scar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 866a0be2b13759840ab1b25f94b921ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: ScarL
+  _id: Scar
   _type: 2
   _ammoID: 7.62x39mm
   _damage: 30
@@ -57,10 +57,7 @@ MonoBehaviour:
   _clipSize: 30
   _handKick: 5
   _bodyKick: 5
-  _leftHandPosition: {x: 0.066, y: -0.1784, z: 0.035}
-  _leftHandRotation: {x: 178.242, y: -5.628998, z: 33.90199}
-  _rightHandPosition: {x: 0.0073, y: -0.2231, z: -0.0339}
-  _rightHandRotation: {x: 88.8, y: 2.12, z: 178.527}
+  rigData: []
   _muzzle: {fileID: 3712427169103837544}
   _flash: {fileID: 4750213779859310993}
   _projectile: {fileID: 7104789598548574155, guid: f67221205662e6441a0e9e21e4f161ea,

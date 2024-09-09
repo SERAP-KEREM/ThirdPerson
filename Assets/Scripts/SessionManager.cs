@@ -33,6 +33,7 @@ public class SessionManager : NetworkBehaviour
 
     private static Role _role = Role.Client; public static Role role { get { return _role; } set { _role = value; } }
     private static ushort _port = 0; public static ushort port { get { return _port; } set { _port = value; } }
+    private static long _accountID = 0; public static long accountID { get { return _port; } set { _accountID = value; } }
 
     public enum Role
     {
@@ -145,74 +146,112 @@ public class SessionManager : NetworkBehaviour
     [ClientRpc]
     public void OnClientConnectedClientRpc(ClientRpcParams rpcParams = default)
     {
-        // ToDo: Pass the account id
-        long accountID = 0;
-        SpawnCharacterServerRpc(accountID);
+        SpawnCharacterServerRpc(_accountID);
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void SpawnCharacterServerRpc(long accountID, ServerRpcParams serverRpcParams = default)
     {
-        Character prefab = PrefabManager.singleton.GetCharacterPrefab("Bot");
-        if (prefab != null)
+        DevelopersHub.RealtimeNetworking.Client.Data.RuntimeGame runtimeGame = RealtimeNetworking.NetcodeGetGameData();
+        DevelopersHub.RealtimeNetworking.Client.Data.RuntimePlayer player = null;
+        for (int i = 0; i < runtimeGame.players.Count; i++)
         {
-            Vector3 position = new Vector3(UnityEngine.Random.Range(-5f, 5f), 0f, UnityEngine.Random.Range(-5f, 5f));
-
-            Character character = Instantiate(prefab, position, Quaternion.identity);
-            character.GetComponent<Unity.Netcode.NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
-
-            _characters.Add(serverRpcParams.Receive.SenderClientId, character);
-
-            Dictionary<string, (string, int)> items = new Dictionary<string, (string, int)> { { "0", ("Scar", 30) }, { "1", ("7.62x39mm", 1000) } };
-            List<string> itemsId = new List<string>();
-            List<string> equippedIds = new List<string>();
-            for (int i = 0; i < items.Count; i++)
+            if (runtimeGame.players[i].id == accountID)
             {
-                itemsId.Add(System.Guid.NewGuid().ToString());
+                player = runtimeGame.players[i];
+                break;
             }
-
-            string itemsJson = JsonMapper.ToJson(items);
-            string itemsIdJson = JsonMapper.ToJson(itemsId);
-            string equippedJson = JsonMapper.ToJson(equippedIds);
-
-            Item[] allItems = FindObjectsByType<Item>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-            List<Item.Data> itemsOnGround = new List<Item.Data>();
-            if (allItems != null)
+        }
+        if (player != null && player.characters.Count > 0)
+        {
+            Character prefab = PrefabManager.singleton.GetCharacterPrefab(player.characters[0].tag);
+            if (prefab != null)
             {
-                for (int i = 0; i < allItems.Length; i++)
+                Vector3 position = new Vector3(UnityEngine.Random.Range(-5f, 5f), 0f, UnityEngine.Random.Range(-5f, 5f));
+
+                Character character = Instantiate(prefab, position, Quaternion.identity);
+                character.GetComponent<Unity.Netcode.NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
+
+                _characters.Add(serverRpcParams.Receive.SenderClientId, character);
+
+                List<Character.BaseData> items = new List<Character.BaseData>();
+                for (int i = 0; i < player.characters[0].equipments.Count; i++)
                 {
-                    if (string.IsNullOrEmpty(allItems[i].networkID))
+                    Item equipmentPrefab = PrefabManager.singleton.GetItemPrefab(player.characters[0].equipments[i].tag);
+                    if (equipmentPrefab != null)
                     {
-                        allItems[i].networkID = System.Guid.NewGuid().ToString();
-                    }
-                    if (allItems[i].transform.parent == null)
-                    {
-                        itemsOnGround.Add(allItems[i].GetData());
+                        Character.BaseData data = new Character.BaseData();
+                        data.id = player.characters[0].equipments[i].tag;
+                        if (equipmentPrefab.GetType() == typeof(Weapon))
+                        {
+                            data.count = ((Weapon)equipmentPrefab).clipSize;
+                        }
+                        else if (equipmentPrefab.GetType() == typeof(Ammo))
+                        {
+                            data.count = 100;
+                        }
+                        else
+                        {
+                            data.count = 1;
+                        }
+                        items.Add(data);
                     }
                 }
-            }
-            string itemsOnGroundJson = JsonMapper.ToJson(itemsOnGround);
 
-
-            character.InitializeServer(items, itemsId, equippedIds, serverRpcParams.Receive.SenderClientId);
-            character.InitializeClientRpc(itemsJson, itemsIdJson, equippedJson, itemsOnGroundJson, serverRpcParams.Receive.SenderClientId);
-
-            foreach (var client in _characters)
-            {
-                if (client.Value != null && client.Value != character)
+                List<string> itemsId = new List<string>();
+                List<string> equippedIds = new List<string>();
+                for (int i = 0; i < items.Count; i++)
                 {
-                    Character.Data data = client.Value.GetData();
-                    string json = JsonMapper.ToJson(data);
-
-                    ulong[] target = new ulong[1];
-                    target[0] = serverRpcParams.Receive.SenderClientId;
-                    ClientRpcParams clientRpcParams = default;
-                    clientRpcParams.Send.TargetClientIds = target;
-
-                    client.Value.InitializeClientRpc(json, client.Key, clientRpcParams);
+                    itemsId.Add(System.Guid.NewGuid().ToString());
                 }
-            }
 
+                string itemsJson = JsonMapper.ToJson(items);
+                string itemsIdJson = JsonMapper.ToJson(itemsId);
+                string equippedJson = JsonMapper.ToJson(equippedIds);
+
+                Item[] allItems = FindObjectsByType<Item>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+                List<Item.Data> itemsOnGround = new List<Item.Data>();
+                if (allItems != null)
+                {
+                    for (int i = 0; i < allItems.Length; i++)
+                    {
+                        if (string.IsNullOrEmpty(allItems[i].networkID))
+                        {
+                            allItems[i].networkID = System.Guid.NewGuid().ToString();
+                        }
+                        if (allItems[i].transform.parent == null)
+                        {
+                            itemsOnGround.Add(allItems[i].GetData());
+                        }
+                    }
+                }
+                string itemsOnGroundJson = JsonMapper.ToJson(itemsOnGround);
+
+
+                character.InitializeServer(items, itemsId, equippedIds, serverRpcParams.Receive.SenderClientId);
+                character.InitializeClientRpc(itemsJson, itemsIdJson, equippedJson, itemsOnGroundJson, serverRpcParams.Receive.SenderClientId);
+
+                foreach (var client in _characters)
+                {
+                    if (client.Value != null && client.Value != character)
+                    {
+                        Character.Data data = client.Value.GetData();
+                        string json = JsonMapper.ToJson(data);
+
+                        ulong[] target = new ulong[1];
+                        target[0] = serverRpcParams.Receive.SenderClientId;
+                        ClientRpcParams clientRpcParams = default;
+                        clientRpcParams.Send.TargetClientIds = target;
+
+                        client.Value.InitializeClientRpc(json, client.Key, clientRpcParams);
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            // Problem
         }
     }
 

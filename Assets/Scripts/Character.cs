@@ -70,16 +70,23 @@ public class Character : NetworkBehaviour
     public struct Data
     {
         public float health;
-        public Dictionary<string, (string, int)> items;
+        public List<BaseData> items;
         public List<string> itemsId;
         public List<string> equippedIds;
+    }
+
+    [System.Serializable]
+    public struct BaseData
+    {
+        public string id;
+        public int count;
     }
 
     public Data GetData()
     {
         Data data = new Data();
         data.health = _health;
-        data.items = new Dictionary<string, (string, int)>();
+        data.items = new List<BaseData>();
         data.itemsId = new List<string>();
         data.equippedIds = new List<string>();
         for (int i = 0; i < _items.Count; i++)
@@ -91,7 +98,11 @@ public class Character : NetworkBehaviour
 
             int value = _items[i].GetAmount();
 
-            data.items.Add(i.ToString(), (_items[i].id, value));
+            BaseData baseData = new BaseData();
+            baseData.id = _items[i].id;
+            baseData.count = value;
+
+            data.items.Add(baseData);
             data.itemsId.Add(_items[i].networkID);
 
             if (_weaponToEquip != null)
@@ -161,7 +172,30 @@ public class Character : NetworkBehaviour
         _networkObject.DontDestroyWithOwner = false;
     }
 
-    public void InitializeServer(Dictionary<string, (string, int)> items, List<string> itemsId, List<string> equippedIds, ulong clientID)
+    public void InitializeDummy(string weaponID)
+    {
+        InitializeComponents();
+        if (_weapon != null)
+        {
+            Destroy(_weapon.gameObject);
+            _weapon = null;
+        }
+        Item prefab = PrefabManager.singleton.GetItemPrefab(weaponID);
+        if (prefab != null && prefab.GetType() == typeof(Weapon))
+        {
+            Item item = Instantiate(prefab, transform);
+            item.Initialize();
+            item.SetOnGroundStatus(false);
+            Weapon w = (Weapon)item;
+            item.transform.SetParent(_weaponHolder);
+            item.transform.localPosition = w.RightHandPosition(_id);
+            item.transform.localEulerAngles = w.RightHandRotation(_id);
+            _rigManager.SetLeftHandGripData(w.LeftHandPosition(_id), w.LeftHandRotation(_id));
+            _weapon = w;
+        }
+    }
+
+    public void InitializeServer(List<BaseData> items, List<string> itemsId, List<string> equippedIds, ulong clientID)
     {
         if (_initialized)
         {
@@ -193,7 +227,7 @@ public class Character : NetworkBehaviour
         {
             Functions.SetLayerMask(transform, LayerMask.NameToLayer("NetworkPlayer"));
         }
-        Dictionary<string, (string, int)> items = JsonMapper.ToObject<Dictionary<string, (string, int)>>(itemsJson);
+        List<BaseData> items = JsonMapper.ToObject<List<BaseData>>(itemsJson);
         List<string> itemsId = JsonMapper.ToObject<List<string>>(itemsIdJson);
         List<string> equippedIds = JsonMapper.ToObject<List<string>>(equippedJson);
         List<Item.Data> itemsOnGround = JsonMapper.ToObject<List<Item.Data>>(itemsOnGroundJson);
@@ -466,7 +500,7 @@ public class Character : NetworkBehaviour
         }
     }
 
-    private void _Initialize(Dictionary<string, (string, int)> items, List<string> itemsId, List<string> equippedIds)
+    private void _Initialize(List<BaseData> items, List<string> itemsId, List<string> equippedIds)
     {
         InitializeComponents();
         if (items != null && PrefabManager.singleton != null)
@@ -476,14 +510,14 @@ public class Character : NetworkBehaviour
             int equippedAmmoIndex = -1;
             foreach (var itemData in items)
             {
-                Item prefab = PrefabManager.singleton.GetItemPrefab(itemData.Value.Item1);
+                Item prefab = PrefabManager.singleton.GetItemPrefab(itemData.id);
                 if (prefab != null)
                 {
                     Item item = Instantiate(prefab, transform);
                     item.Initialize();
                     item.SetOnGroundStatus(false);
                     item.networkID = itemsId[i];
-                    item.SetAmount(itemData.Value.Item2);
+                    item.SetAmount(itemData.count);
                     if (item.GetType() == typeof(Weapon))
                     {
                         Weapon w = (Weapon)item;
