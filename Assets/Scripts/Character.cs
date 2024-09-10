@@ -1,4 +1,4 @@
-using LitJson;
+﻿using LitJson;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ public class Character : NetworkBehaviour
     public LayerMask GroundLayers;
 
     private Weapon _weapon = null; public Weapon weapon { get { return _weapon; } }
-    private Ammo _ammo = null; public Ammo ammo { get { return _ammo; } }
+   private Ammo _ammo = null; public Ammo ammo { get { return _ammo; } }
     private List<Item> _items = new List<Item>(); public List<Item> inventory { get { return _items; } }
     private Animator _animator = null;
     private RigManager _rigManager = null;
@@ -170,6 +170,9 @@ public class Character : NetworkBehaviour
         _fallTimeoutDelta = FallTimeout;
         _networkObject = GetComponent<NetworkObject>();
         _networkObject.DontDestroyWithOwner = false;
+
+      
+
     }
 
     public void InitializeDummy(string weaponID)
@@ -889,7 +892,9 @@ public class Character : NetworkBehaviour
 
     public void Reload()
     {
-        if (_weapon != null && !_reloading && _weapon.ammo < _weapon.clipSize && _ammo != null && _ammo.amount > 0)
+       
+
+        if (_weapon != null && !_reloading && _weapon.ammo < _weapon.clipSize && _ammo.amount > 0)
         {
             if (IsOwner)
             {
@@ -899,6 +904,7 @@ public class Character : NetworkBehaviour
             _reloading = true;
         }
     }
+
 
     [ServerRpc]
     public void ReloadServerRpc(string weaponID, string ammoID)

@@ -207,7 +207,7 @@ namespace StarterAssets
          //  Vector3 target = _mainCamera.transform.position + _mainCamera.transform.forward * 10f;
             if (_input.shoot)
             {
-                Debug.Log("shoot"); 
+                Debug.Log("shoot----"); 
                 _character.Shoot();
             }
 
@@ -215,7 +215,9 @@ namespace StarterAssets
             {
                 if (!_character.reloading && !_character.switchingWeapon) 
                 {
+                    Debug.Log("reload----");
                     _character.Reload();
+
                 }
                 _input.reload = false;
             }
