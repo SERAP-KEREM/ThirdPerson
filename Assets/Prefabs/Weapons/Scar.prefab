@@ -63,6 +63,11 @@ MonoBehaviour:
     leftHandRotation: {x: -19.113495, y: -161.94315, z: -85.73541}
     rightHandPosition: {x: -0.028, y: -0.214, z: -0.074}
     rightHandRotation: {x: 69.66845, y: -75.564514, z: 69.251}
+  - chatacterId: Adam
+    leftHandPosition: {x: -0.0988, y: 0.229, z: 0.0535}
+    leftHandRotation: {x: 34.82091, y: -44.73825, z: 113.639404}
+    rightHandPosition: {x: -0.112, y: 0.189, z: 0.007}
+    rightHandRotation: {x: -62.774292, y: -109.182556, z: -154.94972}
   _muzzle: {fileID: 3712427169103837544}
   _flash: {fileID: 4750213779859310993}
   _projectile: {fileID: 7104789598548574155, guid: f67221205662e6441a0e9e21e4f161ea,

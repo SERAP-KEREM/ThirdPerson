@@ -2500,7 +2500,7 @@ namespace DevelopersHub.RealtimeNetworking.Client
         {
             if (SceneUtility.GetBuildIndexByScenePath(sceneName) >= 0)
             {
-                SceneManager.LoadScene(sceneName);
+                SceneManager.LoadScene(1);
             }
         }
 
