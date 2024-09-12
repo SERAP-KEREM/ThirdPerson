@@ -22,6 +22,10 @@ public class Weapon : Item
     [Header("Prefabs")]
     [SerializeField] private Projectile _projectile = null;
 
+
+    public int maxAmmo = 30;
+    public int currentAmmo;
+
     [System.Serializable]
     public class RigData
     {
@@ -31,6 +35,7 @@ public class Weapon : Item
         public Vector3 rightHandPosition = Vector3.zero;
         public Vector3 rightHandRotation = Vector3.zero;
     }
+    public Weapon equippedWeapon;
 
     public enum Handle
     {
@@ -45,7 +50,18 @@ public class Weapon : Item
         base.Awake();
         _fireTimer += Time.realtimeSinceStartup;
     }
-
+    private void Update()
+    {
+        if (equippedWeapon != null)
+        {
+            // Güvenli bir şekilde equippedWeapon'ın özelliklerine eriş
+            int ammo = equippedWeapon.currentAmmo;
+        }
+        else
+        {
+            Debug.LogWarning("Weapon atanmamış!");
+        }
+    }
     public bool Shoot(Character character, Vector3 target)
     {
         float passedTime = Time.realtimeSinceStartup - _fireTimer;

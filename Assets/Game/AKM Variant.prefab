@@ -36,122 +36,122 @@ PrefabInstance:
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandPosition.x
-      value: -0.098
+      value: -23.68
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandPosition.y
-      value: 0.22
+      value: -5.43
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandPosition.z
-      value: 0.097
+      value: 0.83
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandRotation.x
-      value: 70.983795
+      value: -17.53
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandRotation.y
-      value: -114.60965
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandRotation.z
-      value: 54.966747
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].leftHandPosition.x
-      value: 0.064
+      value: 0.036
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].leftHandPosition.y
-      value: -0.228
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].leftHandPosition.z
-      value: -0.141
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].leftHandRotation.x
-      value: 26.564121
+      value: -0.000005008956
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].leftHandRotation.y
-      value: 176.94481
+      value: 0.000005008956
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].leftHandRotation.z
-      value: -123.95598
+      value: 0.000005008956
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandPosition.x
-      value: -0.1128
+      value: -22.61
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandPosition.y
-      value: 0.1864
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandPosition.z
-      value: 0.0254
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandRotation.x
-      value: -59.75351
+      value: -5.24
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandRotation.y
-      value: -87.083435
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandRotation.z
-      value: -176.43733
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].rightHandPosition.x
-      value: 0.0252
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].rightHandPosition.y
-      value: -0.1964
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].rightHandPosition.z
-      value: -0.1168
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].rightHandRotation.x
-      value: 57.950283
+      value: -23.942657
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].rightHandRotation.y
-      value: 178.71996
+      value: -20.57782
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[1].rightHandRotation.z
-      value: -37.632812
+      value: 121.548874
       objectReference: {fileID: 0}
     - target: {fileID: 7027280936543335927, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}

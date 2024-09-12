@@ -36,6 +36,11 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI _inventoryGridTitle2 = null;
 
     private static CanvasManager _singleton = null;
+
+    [Header("Health and Ammo UI")]
+    [SerializeField] private Slider _healthBar = null;
+    [SerializeField] private TextMeshProUGUI _ammoText = null;
+
     public static CanvasManager singleton
     {
         get
@@ -319,5 +324,23 @@ public class CanvasManager : MonoBehaviour
         _inventoryItems1.Clear();
         _inventoryItems2.Clear();
     }
+    // Sağlık barını güncelle
+public void UpdateHealthBar(float currentHealth, float maxHealth)
+{
+    if (_healthBar != null)
+    {
+        _healthBar.value = currentHealth / 100;
+    }
+}
+
+// Mermi sayısını güncelle
+public void UpdateAmmoText(int currentAmmo, int maxAmmo)
+{
+    if (_ammoText != null)
+    {
+        _ammoText.text = "Ammo: " + currentAmmo.ToString() + "/" + maxAmmo.ToString();
+    }
+}
+
 
 }

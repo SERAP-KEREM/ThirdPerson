@@ -26,6 +26,8 @@ public class Character : NetworkBehaviour
 
     private Weapon _weapon = null; public Weapon weapon { get { return _weapon; } }
    private Ammo _ammo = null; public Ammo ammo { get { return _ammo; } }
+   private CanvasManager _canvasManager = null; public CanvasManager canvasManager { get { return _canvasManager; } }
+
     private List<Item> _items = new List<Item>(); public List<Item> inventory { get { return _items; } }
     private Animator _animator = null;
     private RigManager _rigManager = null;
@@ -65,6 +67,12 @@ public class Character : NetworkBehaviour
     private bool _lastAiming = false;
 
     public static Character localPlayer = null;
+
+
+    public int maxHealth = 100;
+    public int currentHealth = 100;
+
+
 
     [System.Serializable]
     public struct Data
@@ -170,8 +178,10 @@ public class Character : NetworkBehaviour
         _fallTimeoutDelta = FallTimeout;
         _networkObject = GetComponent<NetworkObject>();
         _networkObject.DontDestroyWithOwner = false;
+        currentHealth = maxHealth;
 
-      
+        _canvasManager = FindObjectOfType<CanvasManager>();
+
 
     }
 
@@ -326,6 +336,37 @@ public class Character : NetworkBehaviour
         if (_health <= 0)
         {
             return;
+        }
+        if (_canvasManager == null)
+        {
+            Debug.LogError("CanvasManager is null");
+        }
+
+        if (currentHealth == null)
+        {
+            Debug.LogError("currentHealth null!");
+        }
+
+        if (maxHealth == null)
+        {
+            Debug.LogError("maxHealth null!");
+        }
+
+        // Mevcut mantığınız
+        if (currentHealth > 0)
+        {
+            // Karakter hayatta
+        }
+        if (Character.localPlayer != null)
+        {
+            // Sağlık barını güncelle
+            _canvasManager.UpdateHealthBar(_health/10, Character.localPlayer.maxHealth);
+
+            // Mermi bilgilerini güncelle
+            if (Character.localPlayer.weapon != null)
+            {
+                _canvasManager.UpdateAmmoText(weapon.ammo, Character.localPlayer.weapon.maxAmmo);
+            }
         }
 
         bool armed = _weapon != null;

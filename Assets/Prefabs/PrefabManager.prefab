@@ -48,7 +48,7 @@ MonoBehaviour:
   - {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab, type: 3}
   - {fileID: 7778008274600913403, guid: d43f7e194fa770141a511e888fcf2a1a, type: 3}
   - {fileID: 4779278119480031146, guid: 5ccad6683ab313a4ea054e7d50f5e742, type: 3}
-  - {fileID: 1437388645928842971, guid: 8f33681aa1afd8b4db070bcc24f004d3, type: 3}
+  - {fileID: 525899161577726517, guid: 7ead4ae1ed4e6154a9c255ac33a48689, type: 3}
   _charactors:
   - {fileID: 740318111564140249, guid: 4a9737c2526bc8f4086350b02eb9a0b9, type: 3}
   - {fileID: 5533748145636217904, guid: d9aee61d09b981240a0e2c3edc49adc1, type: 3}
