@@ -24,8 +24,11 @@ public class Character : NetworkBehaviour
     [Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers;
 
+
     private Weapon _weapon = null; public Weapon weapon { get { return _weapon; } }
    private Ammo _ammo = null; public Ammo ammo { get { return _ammo; } }
+    int _ammoCount = 0;
+     
    private CanvasManager _canvasManager = null; public CanvasManager canvasManager { get { return _canvasManager; } }
 
     private List<Item> _items = new List<Item>(); public List<Item> inventory { get { return _items; } }
@@ -71,7 +74,7 @@ public class Character : NetworkBehaviour
 
     public int maxHealth = 100;
     public int currentHealth = 100;
-
+    public bool isReload = true;
 
 
     [System.Serializable]
@@ -352,21 +355,21 @@ public class Character : NetworkBehaviour
             Debug.LogError("maxHealth null!");
         }
 
-        // Mevcut mantığınız
-        if (currentHealth > 0)
-        {
-            // Karakter hayatta
-        }
-        if (Character.localPlayer != null)
+      
+        if (Character.localPlayer != null && IsOwner)
         {
             // Sağlık barını güncelle
-            _canvasManager.UpdateHealthBar(_health/10, Character.localPlayer.maxHealth);
+            _canvasManager.UpdateHealthBar(_health);
 
-            // Mermi bilgilerini güncelle
-            if (Character.localPlayer.weapon != null)
+            Debug.Log(_health +" -  "+ Character.localPlayer.maxHealth);
+            if(Input.GetKeyUp(KeyCode.F))
             {
-                _canvasManager.UpdateAmmoText(weapon.ammo, Character.localPlayer.weapon.maxAmmo);
+                 _ammoCount = weapon.clipSize;
+                _health -=20;
+            
             }
+            _canvasManager.UpdateAmmoText(_weapon.ammo, _ammoCount);
+
         }
 
         bool armed = _weapon != null;
@@ -585,6 +588,8 @@ public class Character : NetworkBehaviour
                     item.gameObject.SetActive(false);
                     _items.Add(item);
                     i++;
+                 
+                   
                 }
             }
             if (_health > 0)
@@ -607,7 +612,7 @@ public class Character : NetworkBehaviour
                         amount = _ammo.amount;
                     }
                     _ammo.amount -= amount;
-                    _weapon.ammo += amount;
+                    _weapon.ammo += _weapon.clipSize;
                 }
             }
         }
@@ -930,21 +935,20 @@ public class Character : NetworkBehaviour
             }
         }
     }
-
     public void Reload()
     {
-       
-
-        if (_weapon != null && !_reloading && _weapon.ammo < _weapon.clipSize && _ammo.amount > 0)
+        if (_weapon != null && !_reloading && _weapon.ammo < _weapon.clipSize && isReload)
         {
             if (IsOwner)
             {
-                ReloadServerRpc(weapon.networkID, _ammo.networkID);
+                ReloadServerRpc(_weapon.networkID, _ammo.networkID);
             }
             _animator.SetTrigger("Reload");
             _reloading = true;
         }
     }
+
+
 
 
     [ServerRpc]
@@ -967,28 +971,63 @@ public class Character : NetworkBehaviour
     {
         if (_weapon != null && _ammo != null && _weapon.networkID == weaponID && _ammo.networkID == ammoID)
         {
-            Reload();
+            ReloadFinished();
         }
         else
         {
-            // Problem
+            // Problem - Weapon veya Ammo eşleşmediğinde buraya hata logu ekleyebilirsin.
         }
     }
 
+
+
     public void ReloadFinished()
     {
-        if (_weapon != null && _weapon.ammo < _weapon.clipSize && _ammo != null && _ammo.amount > 0)
+        if (_weapon != null  && _weapon.ammo < _weapon.clipSize && isReload)
         {
-            int amount = _weapon.clipSize - _weapon.ammo;
-            if (_ammo.amount < amount)
+            // Şarjörü doldurmak için gereken mermi miktarını hesapla
+            int ammoNeeded = _weapon.clipSize - _weapon.ammo;  // Şarjörü doldurmak için gereken mermi miktarı
+            if(ammo.amount>0)
             {
-                amount = _ammo.amount;
+                _ammoCount -= _weapon.clipSize;
             }
-            _ammo.amount -= amount;
-            _weapon.ammo += amount;
+            // Toplam mermi miktarını hesapla (mevcut şarjör ve mermi miktarını da göz önünde bulundurarak)
+            int totalAmmo = _ammo.amount * _weapon.clipSize + _ammoCount;  // Toplam mermi sayısı
+
+            // Yeterli mermi varsa şarjörü doldur
+            if (totalAmmo >= ammoNeeded)
+            {
+                _weapon.ammo = _weapon.clipSize;  // Şarjörü tamamen doldur
+                _ammoCount = totalAmmo - ammoNeeded;  // Kalan toplam mermi miktarını güncelle
+                _ammo.amount = _ammoCount / _weapon.clipSize;  // Kalan tam şarjör sayısını güncelle
+            }
+            else
+            {
+                // Yeterli mermi yoksa, tüm kalan mermileri şarjöre ekle
+                _weapon.ammo += totalAmmo;
+                _ammoCount = 0;
+                _ammo.amount = 0;
+            }
+            if(_ammoCount == 0)
+            {
+                isReload = false;
+
+            }
+            else
+            {
+                isReload = true;
+            }
         }
+
+        // Reload işlemi tamamlandı
         _reloading = false;
+       // _canvasManager.UpdateAmmoText(_weapon.ammo, ammoCount);  // UI güncelleme
     }
+
+
+
+
+
 
     public void HolsterFinished()
     {
@@ -1207,6 +1246,9 @@ public class Character : NetworkBehaviour
             {
                 merge.AddAmount(item.GetAmount());
                 Destroy(item.gameObject);
+                
+          
+                
             }
             else
             {

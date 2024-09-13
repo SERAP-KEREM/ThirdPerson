@@ -325,11 +325,11 @@ public class CanvasManager : MonoBehaviour
         _inventoryItems2.Clear();
     }
     // Sağlık barını güncelle
-public void UpdateHealthBar(float currentHealth, float maxHealth)
+public void UpdateHealthBar(float currentHealth)
 {
     if (_healthBar != null)
     {
-        _healthBar.value = currentHealth / 100;
+        _healthBar.value = currentHealth;
     }
 }
 
@@ -338,7 +338,7 @@ public void UpdateAmmoText(int currentAmmo, int maxAmmo)
 {
     if (_ammoText != null)
     {
-        _ammoText.text = "Ammo: " + currentAmmo.ToString() + "/" + maxAmmo.ToString();
+        _ammoText.text = currentAmmo.ToString() + "/" + maxAmmo.ToString();
     }
 }
 

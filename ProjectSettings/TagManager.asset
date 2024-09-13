@@ -8,6 +8,7 @@ TagManager:
   - Projectile
   - Item
   - Character
+  - Ground
   layers:
   - Default
   - TransparentFX

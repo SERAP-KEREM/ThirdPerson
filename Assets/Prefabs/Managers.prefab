@@ -890,6 +890,8 @@ MonoBehaviour:
   _inventoryGrid2: {fileID: 4093139308441912128}
   _inventoryGridTitle1: {fileID: 2498842050836479844}
   _inventoryGridTitle2: {fileID: 5023061209807707190}
+  _healthBar: {fileID: 0}
+  _ammoText: {fileID: 0}
 --- !u!1 &3863874967615809168
 GameObject:
   m_ObjectHideFlags: 0
@@ -2971,7 +2973,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 84310227
+  GlobalObjectIdHash: 1186769264
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 0
