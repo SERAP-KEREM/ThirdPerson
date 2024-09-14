@@ -74,8 +74,8 @@ public class Character : NetworkBehaviour
 
     public int maxHealth = 100;
     public int currentHealth = 100;
-    public bool isReload = true;
-
+  
+  
 
     [System.Serializable]
     public struct Data
@@ -330,47 +330,41 @@ public class Character : NetworkBehaviour
         _Initialize(data.items, data.itemsId, data.equippedIds);
         if (_health <= 0)
         {
+            
             HealthCheck();
         }
     }
-
+    private float _previousHealth;
+    private int _previousAmmoCount;
     private void Update()
     {
         if (_health <= 0)
         {
             return;
         }
-        if (_canvasManager == null)
-        {
-            Debug.LogError("CanvasManager is null");
-        }
 
-        if (currentHealth == null)
-        {
-            Debug.LogError("currentHealth null!");
-        }
-
-        if (maxHealth == null)
-        {
-            Debug.LogError("maxHealth null!");
-        }
-
-      
         if (Character.localPlayer != null && IsOwner)
         {
-            // Sağlık barını güncelle
-            _canvasManager.UpdateHealthBar(_health);
-
-            Debug.Log(_health +" -  "+ Character.localPlayer.maxHealth);
-            if(Input.GetKeyUp(KeyCode.F))
+            if (_health != _previousHealth)
             {
-                 _ammoCount = weapon.clipSize;
-                _health -=20;
-            
+                _canvasManager.UpdateHealthBar(_health);
+                UpdatePlayerStatsServerRpc(_health, _ammoCount, NetworkManager.Singleton.LocalClientId);
+                _previousHealth = _health;
             }
-            _canvasManager.UpdateAmmoText(_weapon.ammo, _ammoCount);
 
+            if (_ammoCount != _previousAmmoCount)
+            {
+                _canvasManager.UpdateAmmoText(_weapon.ammo, _ammoCount);
+                UpdatePlayerStatsServerRpc(_health, _ammoCount, NetworkManager.Singleton.LocalClientId);
+                _previousAmmoCount = _ammoCount;
+            }
         }
+        else
+        {
+            _canvasManager.UpdateHealthBar(0);
+        }
+
+
 
         bool armed = _weapon != null;
         GroundedCheck();
@@ -466,6 +460,40 @@ public class Character : NetworkBehaviour
         }
 
     }
+
+
+
+    [ServerRpc]
+    public void UpdatePlayerStatsServerRpc(float newHealth, int totalAmmo, ulong clientId)
+    {
+        // Server'da oyuncu verilerini güncelle
+        _health = newHealth;
+
+        // Toplam mermiyi ve şarjörleri güncelle
+        _ammoCount = totalAmmo % _weapon.clipSize;  // Şarjör başına kalan mermi sayısı
+        _ammo.amount = totalAmmo / _weapon.clipSize;  // Toplam şarjör sayısı
+
+        // Client'lara sağlık ve mühimmat bilgisini güncelle
+        UpdateUIOnClientRpc(_health, _ammoCount, NetworkManager.Singleton.LocalClientId);
+    }
+
+    [ClientRpc]
+   
+    public void UpdateUIOnClientRpc(float health, int ammoCount, ulong clientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == clientId)
+        {
+            // Bu client'a ait verileri güncelle
+            _canvasManager.UpdateHealthBar(health);
+            _canvasManager.UpdateAmmoText(_weapon.ammo, ammoCount);
+        }
+    }
+
+
+
+
+
+
 
     [ServerRpc]
     public void OnAimTargetChangedServerRpc(Vector3 value)
@@ -606,14 +634,23 @@ public class Character : NetworkBehaviour
 
                 if (_ammo != null && _ammo.amount > 0 && _weapon.ammo < _weapon.clipSize)
                 {
+                    // Şarjörü doldurmak için gereken mermi miktarını hesapla
                     int amount = _weapon.clipSize - _weapon.ammo;
+
+                    // Eğer mevcut mermi miktarı, gereken miktardan azsa, sadece mevcut mermileri kullan
                     if (_ammo.amount < amount)
                     {
                         amount = _ammo.amount;
                     }
+
+                    // Mevcut mermi miktarını azalt
                     _ammo.amount -= amount;
-                    _weapon.ammo += _weapon.clipSize;
+
+                    // Şarjörü güncelle (silahın mevcut mermi miktarına gerekli mermi miktarını ekle)
+                    _weapon.ammo += amount;
+
                 }
+
             }
         }
     }
@@ -882,6 +919,7 @@ public class Character : NetworkBehaviour
             _health -= damage;
             if (_health <= 0)
             {
+
                 _networkObject.DontDestroyWithOwner = true;
             }
             HealthCheck();
@@ -900,7 +938,9 @@ public class Character : NetworkBehaviour
     {
         if (_health <= 0)
         {
+
             _health = 0;
+
             SetRagdollStatus(true);
             Destroy(_rigManager);
             Destroy(GetComponent<RigBuilder>());
@@ -937,16 +977,18 @@ public class Character : NetworkBehaviour
     }
     public void Reload()
     {
-        if (_weapon != null && !_reloading && _weapon.ammo < _weapon.clipSize && isReload)
+        if (_weapon != null && !_reloading && _weapon.ammo < _weapon.clipSize && _ammo != null && _ammo.amount > 0)
         {
             if (IsOwner)
             {
-                ReloadServerRpc(_weapon.networkID, _ammo.networkID);
+                ReloadServerRpc(weapon.networkID, _ammo.networkID);
             }
             _animator.SetTrigger("Reload");
             _reloading = true;
         }
     }
+
+
 
 
 
@@ -983,49 +1025,49 @@ public class Character : NetworkBehaviour
 
     public void ReloadFinished()
     {
-        if (_weapon != null  && _weapon.ammo < _weapon.clipSize && isReload)
+        if (_weapon != null && _weapon.ammo < _weapon.clipSize )
         {
             // Şarjörü doldurmak için gereken mermi miktarını hesapla
-            int ammoNeeded = _weapon.clipSize - _weapon.ammo;  // Şarjörü doldurmak için gereken mermi miktarı
-            if(ammo.amount>0)
-            {
-                _ammoCount -= _weapon.clipSize;
-            }
-            // Toplam mermi miktarını hesapla (mevcut şarjör ve mermi miktarını da göz önünde bulundurarak)
-            int totalAmmo = _ammo.amount * _weapon.clipSize + _ammoCount;  // Toplam mermi sayısı
+            int ammoNeeded = _weapon.clipSize - _weapon.ammo;
 
-            // Yeterli mermi varsa şarjörü doldur
+            // Elimizdeki toplam mermi miktarını hesapla
+            int totalAmmo = _ammo.amount * _weapon.clipSize + _ammoCount;
+
+           
+
+            // Eğer toplam mermi şarjörü dolduracak kadar fazlaysa
             if (totalAmmo >= ammoNeeded)
             {
-                _weapon.ammo = _weapon.clipSize;  // Şarjörü tamamen doldur
-                _ammoCount = totalAmmo - ammoNeeded;  // Kalan toplam mermi miktarını güncelle
-                _ammo.amount = _ammoCount / _weapon.clipSize;  // Kalan tam şarjör sayısını güncelle
+                // Şarjörü tamamen doldur
+                _weapon.ammo = _weapon.clipSize;
+
+                // Toplam mermiden kullanılan mermi miktarını düş
+                totalAmmo -= ammoNeeded;
+
+                // Kalan mermileri ve şarjör miktarını güncelle
+                _ammoCount -= ammoNeeded;  // Kalan mermi
+                _ammo.amount = _ammoCount / _weapon.clipSize;  // Kalan tam şarjör sayısı
+
+             
             }
             else
             {
-                // Yeterli mermi yoksa, tüm kalan mermileri şarjöre ekle
-                _weapon.ammo += totalAmmo;
+                // Yeterli mermi yoksa tüm kalan mermileri şarjöre ekle
+                _weapon.ammo += totalAmmo;  // Şarjörü mevcut mermilerle doldur
                 _ammoCount = 0;
                 _ammo.amount = 0;
-            }
-            if(_ammoCount == 0)
-            {
-                isReload = false;
 
+             
             }
-            else
-            {
-                isReload = true;
-            }
+
+            // Reload işlemi tamamlandı
+          
+            _reloading = false;
+
+            // UI'yı güncellemek için ammo text fonksiyonunu çağır
+            _canvasManager.UpdateAmmoText(_weapon.ammo, _ammoCount);
         }
-
-        // Reload işlemi tamamlandı
-        _reloading = false;
-       // _canvasManager.UpdateAmmoText(_weapon.ammo, ammoCount);  // UI güncelleme
     }
-
-
-
 
 
 
@@ -1092,16 +1134,19 @@ public class Character : NetworkBehaviour
     }
 
     private List<string> _shots = new List<string>();
-
+    //-----
     public bool Shoot()
     {
         if (_weapon != null && !reloading && _aiming && _weapon.Shoot(this, _aimTarget))
         {
             if (IsOwner)
             {
+                // Sunucuya ateş etme olayını bildir
                 ShootServerRpc(_weapon.networkID);
+
+                // Geri tepme animasyonu sadece ateş eden oyuncu için çalıştırılır
+                _rigManager.ApplyWeaponKick(_weapon.handKick, _weapon.bodyKick);
             }
-            _rigManager.ApplyWeaponKick(_weapon.handKick, _weapon.bodyKick);
             return true;
         }
         return false;
@@ -1110,32 +1155,50 @@ public class Character : NetworkBehaviour
     [ServerRpc]
     public void ShootServerRpc(string weaponID)
     {
-        ShootSync(weaponID);
-        ShootClientRpc(weaponID);
+        ulong shooterID = NetworkManager.Singleton.LocalClientId; // Ateş edenin ID'sini al
+      //  ShootSync(weaponID);
+        ShootClientRpc(weaponID, shooterID); // ClientRpc ile ateş eden oyuncuya bildir
     }
 
     [ClientRpc]
-    public void ShootClientRpc(string weaponID)
+    public void ShootClientRpc(string weaponID, ulong shooterID)
     {
+        // Eğer bu istemci ateş eden oyuncu değilse, ateşleme animasyonunu çalıştır
         if (!IsOwner)
         {
-            ShootSync(weaponID);
+            SyncShootAnimation(weaponID);
         }
     }
 
-    public void ShootSync(string weaponID)
+    public void SyncShootAnimation(string weaponID)
     {
         if (_weapon != null && _weapon.networkID == weaponID)
         {
-            bool shoot = Shoot();
-            if (!shoot)
-            {
-                _shots.Add(weaponID);
-            }
+            // Geri tepme animasyonu sadece görsel olarak diğer oyunculara gösterilir
+            _rigManager.ApplyWeaponKick(_weapon.handKick, _weapon.bodyKick);
         }
-        else
+    }
+
+
+    /// ------
+
+    [ServerRpc]
+    public void UpdateAmmoServerRpc(ulong playerID, int newAmmoCount)
+    {
+        // Mermi bilgisini sunucuda güncelle
+        _ammoCount = newAmmoCount;
+
+        // Diğer istemcilere mermi bilgisini güncelleme çağrısı gönder
+        UpdateAmmoClientRpc(playerID, newAmmoCount);
+    }
+
+    [ClientRpc]
+    private void UpdateAmmoClientRpc(ulong playerID, int newAmmoCount)
+    {
+        if (NetworkManager.Singleton.LocalClientId == playerID) // Yalnızca ateş eden oyuncunun mermi bilgileri güncellenir
         {
-            // Problem
+            _ammoCount = newAmmoCount;
+            _canvasManager.UpdateAmmoText(_weapon.ammo, _ammoCount);
         }
     }
 
@@ -1244,15 +1307,21 @@ public class Character : NetworkBehaviour
         {
             if (merge.GetType() == item.GetType())
             {
-                merge.AddAmount(item.GetAmount());
-                Destroy(item.gameObject);
-                
-          
-                
+                // Tür dönüşümünü güvenli şekilde yapın
+                if (item is Ammo ammoItem && merge is Ammo ammoMerge)
+                {
+                    ammoMerge.amount += ammoItem.amount;
+                    _ammoCount += weapon.clipSize * ammoItem.amount;
+                    Destroy(item.gameObject);
+                }
+                else
+                {
+                    Debug.LogError("Merge and item are not of type Ammo.");
+                }
             }
             else
             {
-                // Problem
+                Debug.LogError("Item and merge are of different types.");
             }
         }
         else
@@ -1273,11 +1342,13 @@ public class Character : NetworkBehaviour
                 {
                     _EquipAmmo((Ammo)item);
                 }
+                _ammoCount += weapon.clipSize * ((Ammo)item).amount;
             }
             item.gameObject.SetActive(false);
             _items.Add(item);
         }
     }
+
 
     public void RemoveItemFromInventoryLocally(Item item)
     {

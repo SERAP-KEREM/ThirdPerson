@@ -42587,7 +42587,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 35
+  m_Value: 72
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
