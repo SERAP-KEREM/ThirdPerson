@@ -68,10 +68,33 @@ MonoBehaviour:
     leftHandRotation: {x: 34.82091, y: -44.73825, z: 113.639404}
     rightHandPosition: {x: -0.08, y: 0.2, z: -0.014}
     rightHandRotation: {x: -70.43179, y: -159.50877, z: -97.44043}
+  - chatacterId: Bryce
+    leftHandPosition: {x: -0.0259, y: 0.2645, z: 0.0394}
+    leftHandRotation: {x: 34.82091, y: -44.73825, z: 113.639404}
+    rightHandPosition: {x: -0.08, y: 0.2, z: -0.014}
+    rightHandRotation: {x: -70.43179, y: -159.50877, z: -97.44043}
+  - chatacterId: James
+    leftHandPosition: {x: -0.0259, y: 0.2645, z: 0.0394}
+    leftHandRotation: {x: 34.82091, y: -44.73825, z: 113.639404}
+    rightHandPosition: {x: -0.08, y: 0.2, z: -0.014}
+    rightHandRotation: {x: -70.43179, y: -159.50877, z: -97.44043}
+  - chatacterId: Lewis
+    leftHandPosition: {x: -0.0259, y: 0.2645, z: 0.0394}
+    leftHandRotation: {x: 34.82091, y: -44.73825, z: 113.639404}
+    rightHandPosition: {x: -0.08, y: 0.2, z: -0.014}
+    rightHandRotation: {x: -70.43179, y: -159.50877, z: -97.44043}
+  - chatacterId: Sophie
+    leftHandPosition: {x: -0.0259, y: 0.2645, z: 0.0394}
+    leftHandRotation: {x: 34.82091, y: -44.73825, z: 113.639404}
+    rightHandPosition: {x: -0.08, y: 0.2, z: -0.014}
+    rightHandRotation: {x: -70.43179, y: -159.50877, z: -97.44043}
   _muzzle: {fileID: 3712427169103837544}
   _flash: {fileID: 4750213779859310993}
   _projectile: {fileID: 7104789598548574155, guid: f67221205662e6441a0e9e21e4f161ea,
     type: 3}
+  maxAmmo: 30
+  currentAmmo: 0
+  equippedWeapon: {fileID: 0}
 --- !u!65 &1981483355298236492
 BoxCollider:
   m_ObjectHideFlags: 0
