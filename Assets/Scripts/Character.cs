@@ -342,30 +342,27 @@ public class Character : NetworkBehaviour
         {
             return;
         }
-
+     
         if (Character.localPlayer != null && IsOwner)
         {
-            if (_health != _previousHealth)
+            
+            // ServerRpc çağrısını sadece sahibi olan oyuncu yapabilir
+            UpdatePlayerStatsServerRpc(_health, _ammoCount, NetworkManager.Singleton.LocalClientId);
+
+            _canvasManager.UpdateAmmoText(_weapon.ammo, _ammoCount);
+
+            if(_health > 0)
             {
                 _canvasManager.UpdateHealthBar(_health);
-                UpdatePlayerStatsServerRpc(_health, _ammoCount, NetworkManager.Singleton.LocalClientId);
-                _previousHealth = _health;
-            }
 
-            if (_ammoCount != _previousAmmoCount)
+            }
+            else
             {
-                _canvasManager.UpdateAmmoText(_weapon.ammo, _ammoCount);
-                UpdatePlayerStatsServerRpc(_health, _ammoCount, NetworkManager.Singleton.LocalClientId);
-                _previousAmmoCount = _ammoCount;
+                _canvasManager.UpdateHealthBar(0);
+
             }
         }
-        else
-        {
-            _canvasManager.UpdateHealthBar(0);
-        }
-
-
-
+       
         bool armed = _weapon != null;
         GroundedCheck();
         FreeFall();
@@ -484,7 +481,7 @@ public class Character : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == clientId)
         {
             // Bu client'a ait verileri güncelle
-            _canvasManager.UpdateHealthBar(health);
+             _canvasManager.UpdateHealthBar(health);
             _canvasManager.UpdateAmmoText(_weapon.ammo, ammoCount);
         }
     }
@@ -919,7 +916,7 @@ public class Character : NetworkBehaviour
             _health -= damage;
             if (_health <= 0)
             {
-
+               
                 _networkObject.DontDestroyWithOwner = true;
             }
             HealthCheck();
@@ -938,9 +935,7 @@ public class Character : NetworkBehaviour
     {
         if (_health <= 0)
         {
-
             _health = 0;
-
             SetRagdollStatus(true);
             Destroy(_rigManager);
             Destroy(GetComponent<RigBuilder>());
@@ -975,6 +970,9 @@ public class Character : NetworkBehaviour
             }
         }
     }
+
+
+
     public void Reload()
     {
         if (_weapon != null && !_reloading && _weapon.ammo < _weapon.clipSize && _ammo != null && _ammo.amount > 0)
@@ -1141,12 +1139,9 @@ public class Character : NetworkBehaviour
         {
             if (IsOwner)
             {
-                // Sunucuya ateş etme olayını bildir
                 ShootServerRpc(_weapon.networkID);
-
-                // Geri tepme animasyonu sadece ateş eden oyuncu için çalıştırılır
-                _rigManager.ApplyWeaponKick(_weapon.handKick, _weapon.bodyKick);
             }
+            _rigManager.ApplyWeaponKick(_weapon.handKick, _weapon.bodyKick);
             return true;
         }
         return false;
@@ -1155,29 +1150,35 @@ public class Character : NetworkBehaviour
     [ServerRpc]
     public void ShootServerRpc(string weaponID)
     {
-        ulong shooterID = NetworkManager.Singleton.LocalClientId; // Ateş edenin ID'sini al
-      //  ShootSync(weaponID);
-        ShootClientRpc(weaponID, shooterID); // ClientRpc ile ateş eden oyuncuya bildir
+        ShootSync(weaponID);
+        ShootClientRpc(weaponID);
     }
 
     [ClientRpc]
-    public void ShootClientRpc(string weaponID, ulong shooterID)
+    public void ShootClientRpc(string weaponID)
     {
-        // Eğer bu istemci ateş eden oyuncu değilse, ateşleme animasyonunu çalıştır
         if (!IsOwner)
         {
-            SyncShootAnimation(weaponID);
+            ShootSync(weaponID);
         }
     }
 
-    public void SyncShootAnimation(string weaponID)
+    public void ShootSync(string weaponID)
     {
         if (_weapon != null && _weapon.networkID == weaponID)
         {
-            // Geri tepme animasyonu sadece görsel olarak diğer oyunculara gösterilir
-            _rigManager.ApplyWeaponKick(_weapon.handKick, _weapon.bodyKick);
+            bool shoot = Shoot();
+            if (!shoot)
+            {
+                _shots.Add(weaponID);
+            }
+        }
+        else
+        {
+            // Problem
         }
     }
+
 
 
     /// ------
