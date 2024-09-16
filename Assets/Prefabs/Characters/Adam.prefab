@@ -118,6 +118,9 @@ MonoBehaviour:
   _flash: {fileID: 4022441452519576051}
   _projectile: {fileID: 7104789598548574155, guid: f67221205662e6441a0e9e21e4f161ea,
     type: 3}
+  maxAmmo: 30
+  currentAmmo: 0
+  equippedWeapon: {fileID: 0}
 --- !u!65 &772114701539625418
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -242,8 +245,8 @@ MonoBehaviour:
     m_Offset: {x: 0, y: 0, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
-    m_AimAxis: 2
-    m_UpAxis: 4
+    m_AimAxis: 3
+    m_UpAxis: 5
     m_WorldUpType: 0
     m_WorldUpObject: {fileID: 0}
     m_WorldUpAxis: 2
@@ -5342,8 +5345,8 @@ MonoBehaviour:
     m_Offset: {x: 0, y: 35, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
-    m_AimAxis: 4
-    m_UpAxis: 2
+    m_AimAxis: 2
+    m_UpAxis: 1
     m_WorldUpType: 1
     m_WorldUpObject: {fileID: 0}
     m_WorldUpAxis: 2
@@ -5630,6 +5633,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8464442380952655027}
+  - component: {fileID: 1900232452106131289}
   m_Layer: 0
   m_Name: LeftHand_target
   m_TagString: Untagged
@@ -5652,6 +5656,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8894703367624838860}
   m_LocalEulerAnglesHint: {x: 60.766, y: -22.37, z: -269.482}
+--- !u!114 &1900232452106131289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6665011388514211206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b84318c60137800479e6e25f6b163e6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 0}
 --- !u!1 &7113119108138303888
 GameObject:
   m_ObjectHideFlags: 0
@@ -11793,6 +11810,8 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
+  maxHealth: 100
+  currentHealth: 100
 --- !u!114 &767665854797079387
 MonoBehaviour:
   m_ObjectHideFlags: 0

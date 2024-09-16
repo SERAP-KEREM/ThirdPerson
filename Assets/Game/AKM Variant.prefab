@@ -21,7 +21,7 @@ PrefabInstance:
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
@@ -35,33 +35,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
+      propertyPath: rigData.Array.data[2].chatacterId
+      value: Bryce
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
+        type: 3}
       propertyPath: rigData.Array.data[0].leftHandPosition.x
-      value: -23.68
+      value: -0.0259
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandPosition.y
-      value: -5.43
+      value: 0.2645
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandPosition.z
-      value: 0.83
+      value: 0.0394
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandRotation.x
-      value: -17.53
+      value: 34.82091
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandRotation.y
-      value: 0
+      value: -44.73825
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].leftHandRotation.z
-      value: 0
+      value: 113.639404
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
@@ -95,33 +100,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
+      propertyPath: rigData.Array.data[2].leftHandPosition.x
+      value: -0.145
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
+        type: 3}
+      propertyPath: rigData.Array.data[2].leftHandPosition.y
+      value: 0.432
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
+        type: 3}
+      propertyPath: rigData.Array.data[2].leftHandPosition.z
+      value: 0.095
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
+        type: 3}
       propertyPath: rigData.Array.data[0].rightHandPosition.x
-      value: -22.61
+      value: -0.08
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandPosition.y
-      value: 0
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandPosition.z
-      value: 0
+      value: -0.014
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandRotation.x
-      value: -5.24
+      value: -70.43179
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandRotation.y
-      value: 0
+      value: -159.50877
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
       propertyPath: rigData.Array.data[0].rightHandRotation.z
-      value: 0
+      value: -97.44043
       objectReference: {fileID: 0}
     - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
@@ -152,6 +172,26 @@ PrefabInstance:
         type: 3}
       propertyPath: rigData.Array.data[1].rightHandRotation.z
       value: 121.548874
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
+        type: 3}
+      propertyPath: rigData.Array.data[2].rightHandPosition.x
+      value: -0.028
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
+        type: 3}
+      propertyPath: rigData.Array.data[2].rightHandPosition.y
+      value: -0.214
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
+        type: 3}
+      propertyPath: rigData.Array.data[2].rightHandPosition.z
+      value: -0.074
+      objectReference: {fileID: 0}
+    - target: {fileID: 4304873113840287452, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
+        type: 3}
+      propertyPath: rigData.Array.data[2].rightHandRotation.z
+      value: 69.25099
       objectReference: {fileID: 0}
     - target: {fileID: 7027280936543335927, guid: 8083794d564d8fe4e9e12ea2c84fe0ab,
         type: 3}
