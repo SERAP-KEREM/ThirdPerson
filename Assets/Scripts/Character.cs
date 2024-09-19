@@ -30,6 +30,7 @@ public class Character : NetworkBehaviour
     int _ammoCount = 0;
      
    private CanvasManager _canvasManager = null; public CanvasManager canvasManager { get { return _canvasManager; } }
+   private CameraManager1 _cameraManager1 = null; public CameraManager1 cameraManager1 { get { return _cameraManager1; } }
 
     private List<Item> _items = new List<Item>(); public List<Item> inventory { get { return _items; } }
     private Animator _animator = null;
@@ -361,6 +362,11 @@ public class Character : NetworkBehaviour
                 _canvasManager.UpdateHealthBar(0);
 
             }
+        }
+
+        if(Input.GetKeyUp(KeyCode.V)) {
+
+            MafiaShoot();
         }
        
         bool armed = _weapon != null;
@@ -896,6 +902,32 @@ public class Character : NetworkBehaviour
         }
     }
 
+
+    void MafiaShoot()
+    {
+        RaycastHit hit;
+        Camera playerCamera = Camera.main; // Ana kamerayı al
+        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            NetworkObject hitObject = hit.collider.GetComponent<NetworkObject>();
+            if (hitObject != null)
+            {
+                // NetworkObject bileşenini al
+                var networkObject = hitObject.GetComponent<NetworkObject>();
+                if (networkObject != null && networkObject.IsSpawned) // NetworkObject'in spawn edilip edilmediğini kontrol et
+                {
+                    // Hasarı hedefe gönder
+                    if (hitObject.TryGetComponent(out MafiaController enemyController))
+                    {
+                        enemyController.TakeDamageServerRpc(5);
+                    }
+                }
+            }
+        }
+    
+    }
     public void OnHolster()
     {
         _HolsterWeapon();
@@ -1141,6 +1173,7 @@ public class Character : NetworkBehaviour
             {
                 ShootServerRpc(_weapon.networkID);
             }
+
             _rigManager.ApplyWeaponKick(_weapon.handKick, _weapon.bodyKick);
             return true;
         }
@@ -1172,12 +1205,44 @@ public class Character : NetworkBehaviour
             {
                 _shots.Add(weaponID);
             }
-        }
-        else
-        {
-            // Problem
+            else
+            {
+                RaycastHit hit;
+                Vector3 shootDirection = (_aimTarget - transform.position).normalized;
+               // Silahın menzilini alın
+
+                if (Physics.Raycast(transform.position, shootDirection, out hit))
+                {
+                    Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
+
+                    if (hit.collider.CompareTag("Mafia"))
+                    {
+                        Debug.Log("Hit Mafia");
+                        MafiaController mafia = hit.collider.GetComponent<MafiaController>();
+                        if (mafia != null)
+                        {
+                            mafia.TakeDamage(5); // Silahın hasarını uygulama
+                        }
+                    }
+                    else if (hit.collider.CompareTag("Civilian"))
+                    {
+                        Debug.Log("Hit Civilian");
+                        CharacterNavigatorScript npc = hit.collider.GetComponent<CharacterNavigatorScript>();
+                        if (npc != null)
+                        {
+                            npc.characterHitDamage(5); // Silahın hasarını uygulama
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.Log("Raycast missed");
+                }
+            }
         }
     }
+
+
 
 
 

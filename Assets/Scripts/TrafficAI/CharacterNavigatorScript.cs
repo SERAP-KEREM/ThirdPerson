@@ -23,7 +23,7 @@ public class CharacterNavigatorScript : MonoBehaviour
     private bool isStuck = false; // Takılıp kalma durumu
 
     private Vector3 lastPosition;
-    public float minimumMovementDistance = 2f; // 2 birimden az hareket ederse takıldı sayılacak
+    public float minimumMovementDistance = 0.1f; // 0.1 birimden az hareket ederse takıldı sayılacak
 
     [Header("Raycast Settings")]
     public float raycastDistance = 1.5f; // Raycast'in mesafesi
@@ -77,7 +77,7 @@ public class CharacterNavigatorScript : MonoBehaviour
     // Engellerde takılma kontrolü ve çözümü
     private void HandleObstacle()
     {
-        // Karakter minimum hareket mesafesinden (2 birim) az hareket ettiyse
+        // Karakter minimum hareket mesafesinden (0.1 birim) az hareket ettiyse
         if (Vector3.Distance(transform.position, lastPosition) < minimumMovementDistance && !destinationReached)
         {
             timeStuck += Time.deltaTime;
@@ -117,8 +117,10 @@ public class CharacterNavigatorScript : MonoBehaviour
     private void AvoidObstacle()
     {
         // Engeli aşmak için rastgele bir yana hareket etme stratejisi
-        float randomDirection = Random.Range(-1f, 1f);
-        transform.Translate(Vector3.right * randomDirection * 2f); // X ekseninde 2 birim yana hareket et
+        float randomDirectionX = Random.Range(-1f, 1f);
+        float randomDirectionZ = Random.Range(-1f, 1f);
+        Vector3 randomDirection = new Vector3(randomDirectionX, 0, randomDirectionZ).normalized;
+        transform.Translate(randomDirection * 2f); // 2 birimlik bir hareket
     }
 
     // Bir sonraki waypoint'e geçişi sağlayan fonksiyon

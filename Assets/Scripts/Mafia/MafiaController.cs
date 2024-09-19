@@ -1,87 +1,126 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using Unity.Netcode;
 
-public class MafiaController : MonoBehaviour
+public class MafiaController : NetworkBehaviour
 {
-    public GameObject player;  // Oyuncu nesnesi
-    public float speed = 5f;   // Dü?man?n ko?ma h?z?
-    public float attackRange = 10f;  // Ate? etme mesafesi
-    public float chaseRange = 20f;   // Ko?maya ba?lama mesafesi
-    public float fireRate = 1f;      // Ate? etme s?kl??? (saniyede bir)
-    public float damage = 5f;        // Her ate?te verilen hasar
-    public float health = 20f;       // Dü?man?n can?
+    public GameObject player; // Oyuncu referansÄ±
+    public float runSpeed = 5f;
+    public float detectionRange = 20f;
+    public float escapeRange = 30f;
+    public float returnRange = 50f;
+    public int maxHealth = 100;
 
-    private float nextFireTime = 0f; // Bir sonraki ate? etme zaman?
-    private Animator animator;       // Animator referans?
-    private bool isDead = false;     // Ölüm durumu kontrolü
+    private int currentHealth;
+    private Animator animator;
+    private NavMeshAgent navMeshAgent;
+    private Vector3 initialPosition;
+    private bool isEscaping = false;
+    private bool isReturning = false;
+    private bool isDead = false;
 
-    Character character;
-
-    private void Start()
+    private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").gameObject;
-        animator = GetComponent<Animator>(); // Animator bile?enini al?yoruz
+        animator = GetComponent<Animator>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        player = GameObject.FindGameObjectWithTag("Character");
+    }
+
+    void Start()
+    {
+        initialPosition = transform.position;
+        navMeshAgent.speed = runSpeed;
+        currentHealth = maxHealth;
     }
 
     void Update()
     {
-        if (!isDead)
-        {
-            // Oyuncu ve dü?man aras?ndaki mesafeyi hesapla
-            float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
+        if (!IsServer || player == null) return;
 
-            // E?er oyuncu chaseRange (20 birim) içinde ise dü?man ko?maya ba?las?n
-            if (distance < chaseRange && distance > attackRange)
+        float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
+        float distanceToInitialPosition = Vector3.Distance(transform.position, initialPosition);
+
+        if (isDead) return;
+
+        if (isEscaping)
+        {
+            if (distanceToPlayer >= escapeRange)
             {
-                ChasePlayer(); // Oyuncuya do?ru ko?ma fonksiyonu
+                isEscaping = false;
+                isReturning = true;
             }
-            // E?er mesafe attackRange (10 birim) içinde ise ate? etsin
-            else if (distance <= attackRange)
+            return;
+        }
+
+        if (isReturning)
+        {
+            navMeshAgent.SetDestination(initialPosition);
+            if (distanceToInitialPosition <= 1f)
             {
-                StopAndShoot(); // Ate? etme fonksiyonu
+                navMeshAgent.isStopped = true;
+                animator.SetBool("Run", false);
+                isReturning = false;
             }
+            return;
+        }
+
+        if (distanceToPlayer <= detectionRange)
+        {
+            if (Input.GetKeyDown(KeyCode.H)) // Hasar tetikleyici
+            {
+                TakeDamage(20);  // Hasar miktarÄ±
+            }
+        }
+        else if (distanceToPlayer > returnRange)
+        {
+            isReturning = true;
         }
     }
 
-    // Oyuncuya do?ru ko?ma
-    void ChasePlayer()
+    [ServerRpc]
+    public void TakeDamageServerRpc(int damage)
     {
-        animator.SetBool("Run", true);  
-        Vector3 direction = (player.transform.position - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
+        TakeDamage(damage);
     }
 
-    // Ate? etme fonksiyonu
-    void StopAndShoot()
+    public void TakeDamage(int damage)
     {
-        animator.SetBool("Shoot", true);  // Ko?may? durdur, ate?e haz?r
-        // E?er ?u anki zaman, bir sonraki ate? etme zaman?ndan büyükse ate? et
-        if (Time.time > nextFireTime)
-        {
-            nextFireTime = Time.time + fireRate;
+        if (isDead) return;
 
-         //   character._health -= 5;
-        }
-    }
+        currentHealth -= damage;
 
-    // Hasar alma fonksiyonu
-    public void TakeDamage(float amount)
-    {
-        health -= amount;
-      
-
-        if (health <= 0f && !isDead)
+        if (currentHealth <= 0)
         {
             Die();
         }
+        else
+        {
+            EscapeFromPlayer();
+        }
     }
 
-    // Ölme fonksiyonu
+    void EscapeFromPlayer()
+    {
+        if (isDead) return;
+
+        isEscaping = true;
+        Vector3 directionAwayFromPlayer = (transform.position - player.transform.position).normalized;
+        Vector3 escapePosition = transform.position + directionAwayFromPlayer * escapeRange;
+
+        navMeshAgent.isStopped = false;
+        navMeshAgent.SetDestination(escapePosition);
+        animator.SetBool("Run", true);
+    }
+
     void Die()
     {
         isDead = true;
-        animator.SetTrigger("Die");  // Ölüm animasyonunu tetikle
-        Destroy(gameObject, 2f); // 2 saniye sonra yok et
+        navMeshAgent.isStopped = true;
+        animator.SetBool("Run", false);
+        animator.SetTrigger("Die");
+
+        Destroy(gameObject, 3f);
     }
 }
