@@ -222,10 +222,7 @@ namespace StarterAssets
 
             if(_input.switchWeapon!=0)
             {
-<<<<<<< HEAD
-=======
-            
->>>>>>> dad493e (existing bugs could not be fixed.)
+
                 _character.ChangeWeapon(_input.switchWeapon);
                
             }
