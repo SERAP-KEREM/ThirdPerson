@@ -478,8 +478,13 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
+=======
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -3464,8 +3469,13 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
+=======
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -9699,6 +9709,7 @@ MeshFilter:
   m_GameObject: {fileID: 229559719}
   m_Mesh: {fileID: 4300002, guid: 2605c818ea0c2df4092b898402e71aae, type: 3}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1001 &228964038
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9781,6 +9792,8 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1377450090}
   m_SourcePrefab: {fileID: 100100000, guid: 9d3a70dd221ddae4b98e6a1427b7df20, type: 3}
+=======
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
 >>>>>>> parent of 6827d55 (Civilian characters added.)
 --- !u!4 &229200261
@@ -36141,6 +36154,7 @@ MeshFilter:
   m_GameObject: {fileID: 811567808}
   m_Mesh: {fileID: 4300000, guid: 47c1421697edd00439084088bf4efb68, type: 3}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1001 &812892032
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36223,6 +36237,8 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 725303382}
   m_SourcePrefab: {fileID: 100100000, guid: 5ca96b4537adb2c4ab12b352b87cbe2b, type: 3}
+=======
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
 >>>>>>> parent of 6827d55 (Civilian characters added.)
 --- !u!23 &813503488
@@ -54624,8 +54640,13 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
+=======
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -56711,8 +56732,13 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
+=======
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -68565,8 +68591,13 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
+=======
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -82199,6 +82230,7 @@ BoxCollider:
   m_Size: {x: 1.5511322, y: 6.1181154, z: 1.4734135}
   m_Center: {x: -0.085868835, y: 3.0589356, z: 0.02866447}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1001 &1791103551
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -82281,6 +82313,8 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 214650221}
   m_SourcePrefab: {fileID: 100100000, guid: 0b51bdd88f959ed46b938af6cf3c32c1, type: 3}
+=======
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
 >>>>>>> parent of 6827d55 (Civilian characters added.)
 --- !u!33 &1791237220
@@ -85559,8 +85593,13 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
+=======
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -85669,8 +85708,13 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
+=======
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -91459,6 +91503,7 @@ MeshFilter:
   m_GameObject: {fileID: 1975172648}
   m_Mesh: {fileID: 4300000, guid: 01f6af96e305cdf409f4be242c9178e7, type: 3}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &1971952830
 GameObject:
   m_ObjectHideFlags: 0
@@ -91590,6 +91635,8 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1080728481}
   m_SourcePrefab: {fileID: 100100000, guid: 75b7026d123ab9f40b144cbe95089c52, type: 3}
+=======
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
 >>>>>>> parent of 6827d55 (Civilian characters added.)
 --- !u!23 &1972788529
@@ -93337,6 +93384,7 @@ GameObject:
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1001 &2005667495
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -93422,6 +93470,8 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1819795208}
   m_SourcePrefab: {fileID: 100100000, guid: b072e7a8bd3602e4481dc9064329400e, type: 3}
+=======
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
 >>>>>>> parent of 6827d55 (Civilian characters added.)
 --- !u!23 &2007452345
@@ -98817,8 +98867,13 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
+=======
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -111139,11 +111194,14 @@ PrefabInstance:
       value: Managers
       objectReference: {fileID: 0}
 <<<<<<< HEAD
+<<<<<<< HEAD
     - target: {fileID: 4014482286885546270, guid: 4de9753f913153b488afa9c0c45fdfd9,
         type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+=======
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
 >>>>>>> parent of 6827d55 (Civilian characters added.)
     - target: {fileID: 4996247373849093585, guid: 4de9753f913153b488afa9c0c45fdfd9,
@@ -111684,6 +111742,7 @@ SceneRoots:
   - {fileID: 7027280937079642210}
   - {fileID: 1325514212}
 <<<<<<< HEAD
+<<<<<<< HEAD
   - {fileID: 2005667495}
   - {fileID: 228964038}
   - {fileID: 812892032}
@@ -111697,5 +111756,7 @@ SceneRoots:
   - {fileID: 1898038773}
 =======
 >>>>>>> parent of 8acc8cd (mafias added.)
+=======
+>>>>>>> parent of 6827d55 (Civilian characters added.)
 =======
 >>>>>>> parent of 6827d55 (Civilian characters added.)
