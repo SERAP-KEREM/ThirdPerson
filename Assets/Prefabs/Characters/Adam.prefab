@@ -245,8 +245,8 @@ MonoBehaviour:
     m_Offset: {x: 0, y: 0, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
-    m_AimAxis: 2
-    m_UpAxis: 4
+    m_AimAxis: 3
+    m_UpAxis: 5
     m_WorldUpType: 0
     m_WorldUpObject: {fileID: 0}
     m_WorldUpAxis: 2
@@ -5345,8 +5345,8 @@ MonoBehaviour:
     m_Offset: {x: 0, y: 35, z: 0}
     m_MinLimit: -180
     m_MaxLimit: 180
-    m_AimAxis: 4
-    m_UpAxis: 2
+    m_AimAxis: 2
+    m_UpAxis: 1
     m_WorldUpType: 1
     m_WorldUpObject: {fileID: 0}
     m_WorldUpAxis: 2
@@ -5633,7 +5633,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8464442380952655027}
-  - component: {fileID: 4582371408844118984}
+  - component: {fileID: 1900232452106131289}
   m_Layer: 0
   m_Name: LeftHand_target
   m_TagString: Untagged
@@ -5649,14 +5649,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6665011388514211206}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.23039554, y: 0.47021446, z: -0.670169, w: -0.5260132}
+  m_LocalPosition: {x: 0.038, y: -0.015, z: -0.06}
+  m_LocalScale: {x: 1.8922375, y: 1.8922375, z: 1.8922375}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8894703367624838860}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4582371408844118984
+  m_LocalEulerAnglesHint: {x: 60.766, y: -22.37, z: -269.482}
+--- !u!114 &1900232452106131289
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
