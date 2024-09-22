@@ -1,34 +1,32 @@
-﻿using Unity.Netcode;
 using UnityEngine;
+using Unity.Netcode;
 
 public class NPCSpawner : NetworkBehaviour
 {
-    public GameObject npcPrefab; // NPC prefab'ı
-    public int npcCount = 5; // Spawn edilecek NPC sayısı
-    public Vector3 spawnArea = new Vector3(10f, 0f, 10f); // Spawn alanı boyutu
+    public GameObject npcPrefab; // NPC prefab'?
+    public int npcCount = 5; // Spawn edilecek NPC say?s?
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer) // Sadece sunucu bu fonksiyonu çalıştırabilir
+        if (IsServer)
         {
-            SpawnNPCs();
+            // T�m oyuncular?n y�klendi?inden emin olmak i�in k?sa bir gecikme ekleyelim
+            Invoke(nameof(SpawnNPCs), 1f);
         }
     }
 
     private void SpawnNPCs()
     {
-        Debug.Log("NPC'ler spawn ediliyor...");
         for (int i = 0; i < npcCount; i++)
         {
-            Vector3 spawnPosition = new Vector3(
-                Random.Range(-spawnArea.x / 2, spawnArea.x / 2),
-                0.5f, // Y pozisyonunu ayarlayın
-                Random.Range(-spawnArea.z / 2, spawnArea.z / 2)
-            );
-
-            GameObject npcInstance = Instantiate(npcPrefab, spawnPosition, Quaternion.identity);
-            npcInstance.GetComponent<NetworkObject>().Spawn(); // NPC'yi ağda spawn et
-            Debug.Log($"NPC oluşturuldu: {npcInstance.name} pozisyon: {spawnPosition}");
+            GameObject npc = Instantiate(npcPrefab, GetRandomPosition(), Quaternion.identity);
+            npc.GetComponent<NetworkObject>().Spawn(); // NPC'yi a?da tan?mla
         }
+    }
+
+    private Vector3 GetRandomPosition()
+    {
+        // Burada NPC'nin rastgele bir pozisyona yerle?ece?i bir fonksiyon yazabilirsin
+        return new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
     }
 }
