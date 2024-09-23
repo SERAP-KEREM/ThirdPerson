@@ -44,7 +44,7 @@ public class Character : NetworkBehaviour
     private Rigidbody[] _ragdollRigidbodies = null;
     private Collider[] _ragdollColliders = null;
 
-    public float _health = 100; public float health { get { return _health; } }
+    private float _health = 100; public float health { get { return _health; } }
 
     private bool _grounded = false; public bool isGrounded { get { return _grounded; } set { _grounded = value; } }
     private bool _walking = false; public bool walking { get { return _walking; } set { _walking = value; } }
