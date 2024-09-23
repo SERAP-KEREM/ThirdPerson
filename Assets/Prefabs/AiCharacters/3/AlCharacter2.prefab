@@ -1264,14 +1264,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5574136893164562700}
-  - component: {fileID: 5048710366428230585}
   - component: {fileID: 5048710366428230586}
   - component: {fileID: 5048710366428230587}
   - component: {fileID: 5048710366428230580}
   - component: {fileID: 5048710366428230581}
+  - component: {fileID: 7382493575134842321}
   m_Layer: 0
   m_Name: AlCharacter2
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1297,33 +1297,6 @@ Transform:
   - {fileID: 545890906063261199}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &5048710366428230585
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5048710366428230582}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 84
-  m_CollisionDetection: 0
 --- !u!136 &5048710366428230586
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1402,6 +1375,35 @@ MonoBehaviour:
   destination: {x: 0, y: 0, z: 0}
   destinationReached: 0
   animator: {fileID: 5048710366428230587}
+  obstacleWaitTime: 2
+  maxStuckTime: 5
+  minimumMovementDistance: 2
+  raycastDistance: 1.5
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!195 &7382493575134842321
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5048710366428230582}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &5387853344987765761
 GameObject:
   m_ObjectHideFlags: 0

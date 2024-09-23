@@ -980,12 +980,12 @@ GameObject:
   - component: {fileID: 2846697809673559380}
   - component: {fileID: 8170000623543273266}
   - component: {fileID: 8170000623543273262}
-  - component: {fileID: 8170000623543273267}
   - component: {fileID: 8170000623543273264}
   - component: {fileID: 8170000623543273265}
+  - component: {fileID: 2368675250614544291}
   m_Layer: 0
   m_Name: AlCharacter
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1033,6 +1033,13 @@ MonoBehaviour:
   destination: {x: 0, y: 0, z: 0}
   destinationReached: 0
   animator: {fileID: 8170000623543273262}
+  obstacleWaitTime: 2
+  maxStuckTime: 5
+  minimumMovementDistance: 2
+  raycastDistance: 1.5
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!95 &8170000623543273262
 Animator:
   serializedVersion: 7
@@ -1055,33 +1062,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!54 &8170000623543273267
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3227480317879764974}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 84
-  m_CollisionDetection: 0
 --- !u!136 &8170000623543273264
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1119,6 +1099,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 8170000623543273266}
   currentWaypoint: {fileID: 0}
+--- !u!195 &2368675250614544291
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3227480317879764974}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &3460763011342738292
 GameObject:
   m_ObjectHideFlags: 0

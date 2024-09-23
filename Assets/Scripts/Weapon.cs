@@ -75,6 +75,23 @@ public class Weapon : Item
             {
                 _flash.Play();
             }
+            Ray ray = CameraManager1.mainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+          float shootingRange = 100f;
+            if (Physics.Raycast(ray, out hit, shootingRange))
+            {
+               // Debug.Log($"Ray bir objeye vurdu: {hit.collider.gameObject.name}");
+
+                // Vurulan objenin tag'ini kontrol et
+                if (hit.collider.CompareTag("NPC"))
+                {
+                    Debug.Log($"Vurulan objenin tag'i: {hit.collider.tag}");
+                   
+
+
+                    hit.collider.gameObject.GetComponent<NPC>().TakeDamage(10,character.transform.position);
+                }
+            }
             return true;
         }
         return false;

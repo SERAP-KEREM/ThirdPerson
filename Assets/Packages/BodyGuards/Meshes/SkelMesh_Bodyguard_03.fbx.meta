@@ -1053,5 +1053,5 @@ AssetOrigin:
   productId: 31711
   packageName: Bodyguards
   packageVersion: 1.2
-  assetPath: Assets/BodyGuards/Meshes/SkelMesh_Bodyguard_03.fbx
+  assetPath: Assets/Packages/BodyGuards/Meshes/SkelMesh_Bodyguard_03.fbx
   uploadId: 58356

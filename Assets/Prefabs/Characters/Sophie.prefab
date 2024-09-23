@@ -4274,9 +4274,9 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 4077c357c11d2d74bb43c14ba6b7f8cf, type: 3}
   m_Controller: {fileID: 9100000, guid: e9c2fa298f18e0448ae214e28af950d6, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -4455,7 +4455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2624875530
+  GlobalObjectIdHash: 2041847405
   InScenePlacedSourceGlobalObjectIdHash: 2642869087
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -4484,6 +4484,7 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
+  _health: 100
   maxHealth: 100
   currentHealth: 100
 --- !u!114 &5614335746457309881

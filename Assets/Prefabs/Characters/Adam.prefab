@@ -11188,6 +11188,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 517100642460677770}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a3ed37d90d8ffff40bc7d7c37c6fce08,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4695204327592304415}
     - targetCorrespondingSourceObject: {fileID: 3267151512053241269, guid: a3ed37d90d8ffff40bc7d7c37c6fce08,
         type: 3}
       insertIndex: -1
@@ -11781,7 +11785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2749997695
+  GlobalObjectIdHash: 952130193
   InScenePlacedSourceGlobalObjectIdHash: 2642869087
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -11810,6 +11814,7 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
+  _health: 100
   maxHealth: 100
   currentHealth: 100
 --- !u!114 &767665854797079387
@@ -11859,6 +11864,21 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &4695204327592304415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387772413494417060}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31723e21d8a90864e8a071a49a3ff803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRate: 0.5
+  weaponDamage: 25
+  targetTag: NPC
 --- !u!1 &1421315415963209521 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8342156698166696764, guid: a3ed37d90d8ffff40bc7d7c37c6fce08,

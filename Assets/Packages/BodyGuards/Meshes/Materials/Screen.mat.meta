@@ -11,5 +11,5 @@ AssetOrigin:
   productId: 31711
   packageName: Bodyguards
   packageVersion: 1.2
-  assetPath: Assets/BodyGuards/Meshes/Materials/Screen.mat
+  assetPath: Assets/Packages/BodyGuards/Meshes/Materials/Screen.mat
   uploadId: 58356
