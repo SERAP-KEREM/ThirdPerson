@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UIElements;
 
 public class Character : NetworkBehaviour
 {
@@ -343,7 +344,10 @@ public class Character : NetworkBehaviour
         {
             return;
         }
-     
+
+
+       
+
         if (Character.localPlayer != null && IsOwner)
         {
             
@@ -1163,24 +1167,24 @@ public class Character : NetworkBehaviour
         }
     }
 
-    private List<string> _shots = new List<string>();
     //-----
+
+    private List<string> _shots = new List<string>();
     public bool Shoot()
     {
-        if (_weapon != null && !reloading && _aiming && _weapon.Shoot(this, _aimTarget))
+        if (_weapon != null && !reloading && aiming && _weapon.Shoot(this, _aimTarget))
         {
             if (IsOwner)
             {
                 ShootServerRpc(_weapon.networkID);
+                DetectHitAndDamage(); // Vuruş algıla ve hasar ver
             }
-
-            _rigManager.ApplyWeaponKick(_weapon.handKick, _weapon.bodyKick);
             return true;
         }
         return false;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void ShootServerRpc(string weaponID)
     {
         ShootSync(weaponID);
@@ -1196,6 +1200,57 @@ public class Character : NetworkBehaviour
         }
     }
 
+    public void DetectHitAndDamage()
+    {
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 100f)) // 100 birim mesafe ile raycast
+        {
+            if (hit.collider.CompareTag("Mafia"))
+            {
+                Debug.Log("NPC vuruldu, hasar veriliyor.");
+                var mafiaController = hit.collider.GetComponent<MafiaController>();
+                if (mafiaController != null)
+                {
+                    mafiaController.TakeDamageServerRpc(20); // Hasar verme
+                }
+                else
+                {
+                    Debug.LogError("NPC bileşeni bulunamadı!");
+                }
+            }
+            else if (hit.collider.CompareTag("Player"))
+            {
+                Debug.Log("Oyuncu vuruldu, hasar veriliyor.");
+                var character = hit.collider.GetComponent<Character>();
+                if (character != null)
+                {
+                    character.TakeDamageServerRpc(20); // Hasar verme
+                }
+                else
+                {
+                    Debug.LogError("Oyuncu bileşeni bulunamadı!");
+                }
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TakeDamageServerRpc(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            // Hasar alma animasyonu veya başka bir işlem burada yapılabilir.
+            Debug.Log("Kaçış anim");
+        }
+    }
+
     public void ShootSync(string weaponID)
     {
         if (_weapon != null && _weapon.networkID == weaponID)
@@ -1205,50 +1260,25 @@ public class Character : NetworkBehaviour
             {
                 _shots.Add(weaponID);
             }
-            else
-            {
-                RaycastHit hit;
-                Vector3 shootDirection = (_aimTarget - transform.position).normalized;
-               // Silahın menzilini alın
-
-                if (Physics.Raycast(transform.position, shootDirection, out hit))
-                {
-                    Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
-
-                    if (hit.collider.CompareTag("Mafia"))
-                    {
-                        Debug.Log("Hit Mafia");
-                        MafiaController mafia = hit.collider.GetComponent<MafiaController>();
-                        if (mafia != null)
-                        {
-                            mafia.TakeDamage(5); // Silahın hasarını uygulama
-                        }
-                    }
-                    else if (hit.collider.CompareTag("Civilian"))
-                    {
-                        Debug.Log("Hit Civilian");
-                        CharacterNavigatorScript npc = hit.collider.GetComponent<CharacterNavigatorScript>();
-                        if (npc != null)
-                        {
-                            npc.characterHitDamage(5); // Silahın hasarını uygulama
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.Log("Raycast missed");
-                }
-            }
         }
+        else
+        {
+            Debug.LogError("Silah kimliği eşleşmiyor!");
+        }
+    }
+
+    private void Die()
+    {
+        // Ölüm animasyonu veya işlemleri
+        Debug.Log("Karakter öldü.");
     }
 
 
 
 
+/// ------
 
-    /// ------
-
-    [ServerRpc]
+[ServerRpc]
     public void UpdateAmmoServerRpc(ulong playerID, int newAmmoCount)
     {
         // Mermi bilgisini sunucuda güncelle

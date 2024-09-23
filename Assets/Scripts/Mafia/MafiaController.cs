@@ -6,7 +6,7 @@ using Unity.Netcode;
 
 public class MafiaController : NetworkBehaviour
 {
-    public GameObject player; // Oyuncu referansı
+    [SerializeField] Character player; // Oyuncu referansı
     public float runSpeed = 5f;
     public float detectionRange = 20f;
     public float escapeRange = 30f;
@@ -25,7 +25,7 @@ public class MafiaController : NetworkBehaviour
     {
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
-        player = GameObject.FindGameObjectWithTag("Character");
+        player = FindObjectOfType<Character>();
     }
 
     void Start()
@@ -33,14 +33,21 @@ public class MafiaController : NetworkBehaviour
         initialPosition = transform.position;
         navMeshAgent.speed = runSpeed;
         currentHealth = maxHealth;
+        if (IsServer)
+        {
+            NetworkObject.Spawn();
+        }
     }
 
     void Update()
     {
-        if (!IsServer || player == null) return;
+        if (player == null)
+        {
+            player = FindObjectOfType<Character>();
+            if (player == null) return;
+        }
 
         float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
-        float distanceToInitialPosition = Vector3.Distance(transform.position, initialPosition);
 
         if (isDead) return;
 
@@ -57,7 +64,7 @@ public class MafiaController : NetworkBehaviour
         if (isReturning)
         {
             navMeshAgent.SetDestination(initialPosition);
-            if (distanceToInitialPosition <= 1f)
+            if (Vector3.Distance(transform.position, initialPosition) <= 1f)
             {
                 navMeshAgent.isStopped = true;
                 animator.SetBool("Run", false);
@@ -68,10 +75,7 @@ public class MafiaController : NetworkBehaviour
 
         if (distanceToPlayer <= detectionRange)
         {
-            if (Input.GetKeyDown(KeyCode.H)) // Hasar tetikleyici
-            {
-                TakeDamage(20);  // Hasar miktarı
-            }
+            // NPC burada başka bir işlem yapabilir.
         }
         else if (distanceToPlayer > returnRange)
         {
@@ -79,7 +83,7 @@ public class MafiaController : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void TakeDamageServerRpc(int damage)
     {
         TakeDamage(damage);
@@ -90,7 +94,6 @@ public class MafiaController : NetworkBehaviour
         if (isDead) return;
 
         currentHealth -= damage;
-
         if (currentHealth <= 0)
         {
             Die();
@@ -120,7 +123,6 @@ public class MafiaController : NetworkBehaviour
         navMeshAgent.isStopped = true;
         animator.SetBool("Run", false);
         animator.SetTrigger("Die");
-
         Destroy(gameObject, 3f);
     }
 }

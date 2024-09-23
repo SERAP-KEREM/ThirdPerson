@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e651dbb3fbac04af2b8f5abf007ddc23, type: 3}
-  m_Name: MAfia
+  m_Name: Characters 1
   m_EditorClassIdentifier: 
   IsDefault: 0
   List:
   - Override: 0
-    Prefab: {fileID: 1387772413494417060, guid: d9aee61d09b981240a0e2c3edc49adc1,
-      type: 3}
+    Prefab: {fileID: 839506802635380042, guid: e10d601153e59c841a2b6e29e7088d08, type: 3}
     SourcePrefabToOverride: {fileID: 0}
     SourceHashToOverride: 0
     OverridingTargetPrefab: {fileID: 0}
