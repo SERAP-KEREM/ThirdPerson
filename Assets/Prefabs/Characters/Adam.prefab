@@ -11814,7 +11814,6 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
-  _health: 100
   maxHealth: 100
   currentHealth: 100
 --- !u!114 &767665854797079387

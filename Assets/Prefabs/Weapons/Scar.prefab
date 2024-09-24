@@ -29,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.08574892, y: -0.6703257, z: 0.65658134, w: 0.33497992}
   m_LocalPosition: {x: -0.028, y: -0.214, z: -0.074}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 294178119524401815}
   - {fileID: 3712427169103837544}
@@ -79,15 +79,15 @@ MonoBehaviour:
     rightHandPosition: {x: -0.08, y: 0.2, z: -0.014}
     rightHandRotation: {x: -70.43179, y: -159.50877, z: -97.44043}
   - chatacterId: Megan
-    leftHandPosition: {x: -0.0259, y: 0.2645, z: 0.0394}
+    leftHandPosition: {x: -0.027, y: 0.286, z: 0.023}
     leftHandRotation: {x: 34.82091, y: -44.73825, z: 113.639404}
-    rightHandPosition: {x: -0.08, y: 0.2, z: -0.014}
-    rightHandRotation: {x: -70.43179, y: -159.50877, z: -97.44043}
+    rightHandPosition: {x: -0.066, y: 0.2083, z: -0.0096}
+    rightHandRotation: {x: -72.62808, y: 174.96289, z: -76.12329}
   - chatacterId: Sophie
-    leftHandPosition: {x: -0.0259, y: 0.2645, z: 0.0394}
-    leftHandRotation: {x: 34.82091, y: -44.73825, z: 113.639404}
-    rightHandPosition: {x: -0.08, y: 0.2, z: -0.014}
-    rightHandRotation: {x: -70.43179, y: -159.50877, z: -97.44043}
+    leftHandPosition: {x: -0.081, y: 0.232, z: 0.123}
+    leftHandRotation: {x: 41.882122, y: 26.210382, z: 84.308334}
+    rightHandPosition: {x: -0.081, y: 0.209, z: 0.058}
+    rightHandRotation: {x: -76.67859, y: -49.545654, z: 137.91084}
   _muzzle: {fileID: 3712427169103837544}
   _flash: {fileID: 4750213779859310993}
   _projectile: {fileID: 7104789598548574155, guid: f67221205662e6441a0e9e21e4f161ea,

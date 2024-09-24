@@ -338,6 +338,7 @@ public class Character : NetworkBehaviour
     }
     private float _previousHealth;
     private int _previousAmmoCount;
+    public Vector3 playerTarget;
     private void Update()
     {
         if (_health <= 0)
@@ -345,12 +346,12 @@ public class Character : NetworkBehaviour
             return;
         }
 
-
        
+
 
         if (Character.localPlayer != null && IsOwner)
         {
-            
+
             // ServerRpc çağrısını sadece sahibi olan oyuncu yapabilir
             UpdatePlayerStatsServerRpc(_health, _ammoCount, NetworkManager.Singleton.LocalClientId);
 

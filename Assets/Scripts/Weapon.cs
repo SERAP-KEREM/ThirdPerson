@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class Weapon : Item
 {
@@ -36,7 +37,7 @@ public class Weapon : Item
         public Vector3 rightHandRotation = Vector3.zero;
     }
     public Weapon equippedWeapon;
-
+   
     public enum Handle
     {
         OneHanded = 1, TwoHanded = 2
@@ -44,7 +45,7 @@ public class Weapon : Item
 
     private float _fireTimer = 0;
     private int _ammo = 0; public int ammo { get { return _ammo; } set { _ammo = value; } }
-
+    Vector3 target;
     public override void Awake()
     {
         base.Awake();
@@ -52,6 +53,8 @@ public class Weapon : Item
     }
     private void Update()
     {
+        
+
         if (equippedWeapon != null)
         {
             // Güvenli bir şekilde equippedWeapon'ın özelliklerine eriş
@@ -86,17 +89,15 @@ public class Weapon : Item
                 if (hit.collider.CompareTag("NPC"))
                 {
                     Debug.Log($"Vurulan objenin tag'i: {hit.collider.tag}");
-                   
-
-
-                    hit.collider.gameObject.GetComponent<NPC>().TakeDamage(10,character.transform.position);
+              
+                    hit.collider.gameObject.GetComponent<NPC>().TakeDamage(10);
                 }
             }
             return true;
         }
         return false;
     }
-
+   
     public Vector3 LeftHandPosition(string chatacterId)
     {
         if (rigData != null)

@@ -4,35 +4,60 @@ using Unity.Netcode;
 
 public class NPC : NetworkBehaviour
 {
-    public float health = 100f;
-    public float fleeDistance = 10f;   // Kaç?? mesafesi
-    public float returnDistance = 15f; // Geri dönü? için mesafe
-    public float speed = 5f;           // NPC h?z?
+    public float health = 100f;               // NPC'nin can?
+    public float fleeDistance = 10f;          // Kaç?? mesafesi
+    public float returnDistance = 15f;        // Geri dönü? için mesafe
+    public float safeDistance = 20f;          // NPC'nin player'dan uzakla?mas? gereken mesafe
+    public float speed = 5f;                  // NPC h?z?
 
-    public Animator animator;          // NPC animatörü
-    public Vector3 initialPosition;    // Ba?lang?ç pozisyonu (Vector3)
-    private NavMeshAgent navMeshAgent;
-    private bool isFleeing = false;    // NPC kaç?yor mu?
-    private bool isReturning = false;  // NPC geri dönüyor mu?
-    private bool isDead = false;       // NPC ölü mü?
+    public Animator animator;                 // NPC animatörü
+    public Vector3 initialPosition;           // Ba?lang?ç pozisyonu
+    private NavMeshAgent navMeshAgent;        // NavMeshAgent bile?eni
+    private bool isFleeing = false;           // NPC kaç?yor mu?
+    private bool isReturning = false;         // NPC geri dönüyor mu?
+    private bool isDead = false;              // NPC ölü mü?
+    private Vector3 playerTarget;             // Player'?n pozisyonu
+    private Character character;              // Player'?n Character bile?eni
 
     private void Start()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        // Player'? bul ve Character bile?enini al
+        GameObject playerObject = GameObject.FindWithTag("Player");
+        if (playerObject != null)
+        {
+            character = playerObject.GetComponent<Character>();
 
-        // NPC'nin ba?lang?ç pozisyonunu kaydediyoruz
+            if (character == null)
+            {
+                Debug.LogError("Character bile?eni bulunamad?!");
+            }
+        }
+        else
+        {
+            Debug.LogError("Player tag'li obje bulunamad?!");
+        }
+
+        // NavMeshAgent bile?enini al
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        if (navMeshAgent == null)
+        {
+            Debug.LogError("NavMeshAgent bile?eni bulunamad?!");
+        }
+
+        // Ba?lang?ç pozisyonunu kaydet
         initialPosition = transform.position;
 
-        // E?er NavMesh üzerinde de?ilse hata mesaj? gösterelim
+        // E?er NavMesh üzerinde de?ilse hata mesaj? göster
         if (!navMeshAgent.isOnNavMesh)
         {
             Debug.LogError("NPC NavMesh üzerinde de?il!");
         }
     }
 
-    public void TakeDamage(float damageAmount, Vector3 target)
+    public void TakeDamage(float damageAmount)
     {
         if (isDead) return;  // E?er ölü ise daha fazla i?lem yapmay?z
+
         health -= damageAmount;
         Debug.Log($"NPC can?: {health}");
 
@@ -42,34 +67,41 @@ public class NPC : NetworkBehaviour
         }
         else
         {
-            Flee(target);  // NPC kaçmaya ba?lar
+            playerTarget = character.transform.position;
+            Flee(playerTarget);  // NPC kaçmaya ba?lar
         }
     }
 
     // Kaçma i?lemi
     public void Flee(Vector3 target)
     {
-        if (!isFleeing && navMeshAgent.isOnNavMesh)  // NavMesh'te oldu?undan emin ol
+        if (navMeshAgent == null || !navMeshAgent.isOnNavMesh)
         {
-            Vector3 fleeDirection = (transform.position - target).normalized;
-            Vector3 fleeTarget = transform.position + fleeDirection * fleeDistance;
-
-            navMeshAgent.speed = speed;
-            navMeshAgent.SetDestination(fleeTarget);
-            animator.SetBool("Run", true);  // Kaçma animasyonu ba?lar
-            isFleeing = true;
+            Debug.LogError("NavMeshAgent atanmad? ya da NavMesh üzerinde de?il.");
+            return;
         }
+
+        target = character.transform.position;
+        Vector3 fleeDirection = (transform.position - target).normalized;
+        Vector3 fleeTarget = transform.position + fleeDirection * fleeDistance;
+
+        navMeshAgent.speed = speed;
+        navMeshAgent.SetDestination(fleeTarget);
+        animator.SetBool("Run", true);
+        isFleeing = true;
     }
 
     private void Update()
     {
-        if (isFleeing)
+        // E?er character veya navMeshAgent atanmad?ysa, i?lemleri durdur
+        if (character == null || navMeshAgent == null) return;
+
+        playerTarget = character.transform.position;
+
+        // E?er player ile yeterli mesafeye ula?t?ysa geri dön
+        if (Vector3.Distance(transform.position, playerTarget) > safeDistance)
         {
-            // E?er kaçma mesafesine ula?m??sa geri dön
-            if (Vector3.Distance(transform.position, initialPosition) > returnDistance)
-            {
-                ReturnToInitialPosition();
-            }
+            ReturnToInitialPosition();
         }
 
         if (isReturning)
@@ -101,9 +133,8 @@ public class NPC : NetworkBehaviour
     private void Die()
     {
         isDead = true;
-        navMeshAgent.isStopped = true; // NPC hareketi durur
-        animator.SetTrigger("Die");    // Ölüm animasyonu tetiklenir
-        Destroy(gameObject, 3f);       // 3 saniye sonra NPC yok olur
+        navMeshAgent.isStopped = true;  // NPC hareketi durur
+        animator.SetTrigger("Die");      // Ölüm animasyonu tetiklenir
+        Destroy(gameObject, 3f);         // 3 saniye sonra NPC yok olur
     }
 }
-
