@@ -17,6 +17,9 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] public float _topOffset = 5f;
     [SerializeField] public float _buttomOffset = 5f;
 
+
+    private bool isItemPickupPanelOpen=false;
+
     [Header("Loot Box")]
     [SerializeField] public GameObject _itemLootPanel = null;
     [SerializeField] public RectTransform _itemLootBox = null;
@@ -94,6 +97,11 @@ public class CanvasManager : MonoBehaviour
 
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.F) && isItemPickupPanelOpen)
+        {
+            _itemPickupPanel.gameObject.SetActive(false);
+            isItemPickupPanelOpen= false;
+        }
         if (_itemToPick != null)
         {
             Vector2 position = CameraManager1.mainCamera.WorldToScreenPoint(_itemToPick.transform.position) * _screenScale;
@@ -145,10 +153,12 @@ public class CanvasManager : MonoBehaviour
             _itemPickupName.text = _itemToPick.id;
             _itemPickupAmount.text = "x" + _itemToPick.GetAmount().ToString();
             _itemPickupPanel.gameObject.SetActive(true);
+            isItemPickupPanelOpen = true;
         }
         else
         {
             _itemPickupPanel.gameObject.SetActive(false);
+            isItemPickupPanelOpen = false;
         }
     }
 
