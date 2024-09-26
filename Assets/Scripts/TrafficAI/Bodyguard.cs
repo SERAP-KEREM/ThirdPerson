@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using Unity.Netcode;
 using System.Collections;
 
-public class NPC : NetworkBehaviour
+public class Bodyguard : NetworkBehaviour
 {
     public float health = 100f;               // NPC'nin can?
     public float fleeDistance = 10f;          // Kaç?? mesafesi

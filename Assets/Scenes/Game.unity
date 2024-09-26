@@ -612,6 +612,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bodyguard_03
       objectReference: {fileID: 0}
+    - target: {fileID: 4858381418560149651, guid: 712c740e2f9bda34f8862564ae9e0dc4,
+        type: 3}
+      propertyPath: m_TagString
+      value: Bodyguard
+      objectReference: {fileID: 0}
     - target: {fileID: 6447372882033517613, guid: 712c740e2f9bda34f8862564ae9e0dc4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -665,7 +670,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4858381418560149651, guid: 712c740e2f9bda34f8862564ae9e0dc4,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 380353162}
   m_SourcePrefab: {fileID: 100100000, guid: 712c740e2f9bda34f8862564ae9e0dc4, type: 3}
 --- !u!23 &10122471
 MeshRenderer:
@@ -8410,6 +8419,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bodyguard_02
       objectReference: {fileID: 0}
+    - target: {fileID: 3147332615572088106, guid: 99cc1f2b4f6a67745827bf2998747bce,
+        type: 3}
+      propertyPath: m_TagString
+      value: Bodyguard
+      objectReference: {fileID: 0}
     - target: {fileID: 3618270812317739991, guid: 99cc1f2b4f6a67745827bf2998747bce,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8488,6 +8502,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 169450042}
+    - targetCorrespondingSourceObject: {fileID: 3147332615572088106, guid: 99cc1f2b4f6a67745827bf2998747bce,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 169450043}
   m_SourcePrefab: {fileID: 100100000, guid: 99cc1f2b4f6a67745827bf2998747bce, type: 3}
 --- !u!1 &169450040 stripped
 GameObject:
@@ -8523,6 +8541,25 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &169450043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169450040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f08f76acf8b71a4085087a0db407ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  fleeDistance: 10
+  returnDistance: 15
+  safeDistance: 20
+  speed: 5
+  animator: {fileID: 169450041}
+  initialPosition: {x: 0, y: 0, z: 0}
 --- !u!23 &169930635
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -18069,6 +18106,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 378906291}
   m_Mesh: {fileID: 4300000, guid: ab761d05302615348a9aed34ccd58dd7, type: 3}
+--- !u!1 &380353161 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4858381418560149651, guid: 712c740e2f9bda34f8862564ae9e0dc4,
+    type: 3}
+  m_PrefabInstance: {fileID: 9489205}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &380353162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380353161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f08f76acf8b71a4085087a0db407ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  fleeDistance: 10
+  returnDistance: 15
+  safeDistance: 20
+  speed: 5
+  animator: {fileID: 380353167}
+  initialPosition: {x: 0, y: 0, z: 0}
+--- !u!95 &380353167 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2330042394619792367, guid: 712c740e2f9bda34f8862564ae9e0dc4,
+    type: 3}
+  m_PrefabInstance: {fileID: 9489205}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &381106291
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -25840,6 +25908,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bodyguard_04
       objectReference: {fileID: 0}
+    - target: {fileID: 9107814218413608132, guid: cae9259c892764b4b9c480dba1f5cef2,
+        type: 3}
+      propertyPath: m_TagString
+      value: Bodyguard
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25848,6 +25921,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 533675620}
+    - targetCorrespondingSourceObject: {fileID: 9107814218413608132, guid: cae9259c892764b4b9c480dba1f5cef2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 533675621}
   m_SourcePrefab: {fileID: 100100000, guid: cae9259c892764b4b9c480dba1f5cef2, type: 3}
 --- !u!95 &533675618 stripped
 Animator:
@@ -25883,6 +25960,25 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &533675621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533675619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f08f76acf8b71a4085087a0db407ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  fleeDistance: 10
+  returnDistance: 15
+  safeDistance: 20
+  speed: 5
+  animator: {fileID: 533675618}
+  initialPosition: {x: 0, y: 0, z: 0}
 --- !u!23 &534025463
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -93130,34 +93226,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.8977594, y: 1.0031165, z: 2.5016723}
   m_Center: {x: 0.0009471178, y: 0.501558, z: 0.0026056767}
---- !u!1 &1819795207 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3227480317879764974, guid: b072e7a8bd3602e4481dc9064329400e,
-    type: 3}
-  m_PrefabInstance: {fileID: 2005667495}
-  m_PrefabAsset: {fileID: 0}
---- !u!195 &1819795208
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1819795207}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!4 &1819878701
 Transform:
   m_ObjectHideFlags: 0
@@ -102510,7 +102578,32 @@ PrefabInstance:
     - target: {fileID: 3227480317879764974, guid: b072e7a8bd3602e4481dc9064329400e,
         type: 3}
       propertyPath: m_TagString
-      value: Player
+      value: NPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 8170000623543273262, guid: b072e7a8bd3602e4481dc9064329400e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8170000623543273262, guid: b072e7a8bd3602e4481dc9064329400e,
+        type: 3}
+      propertyPath: m_UpdateMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8170000623543273262, guid: b072e7a8bd3602e4481dc9064329400e,
+        type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8170000623543273262, guid: b072e7a8bd3602e4481dc9064329400e,
+        type: 3}
+      propertyPath: m_AnimatePhysics
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8170000623543273262, guid: b072e7a8bd3602e4481dc9064329400e,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8170000623543273265, guid: b072e7a8bd3602e4481dc9064329400e,
         type: 3}
@@ -102520,11 +102613,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3227480317879764974, guid: b072e7a8bd3602e4481dc9064329400e,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1819795208}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b072e7a8bd3602e4481dc9064329400e, type: 3}
 --- !u!23 &2007452345
 MeshRenderer:
@@ -109127,7 +109216,7 @@ PrefabInstance:
     - target: {fileID: 5661469185850222114, guid: 17085d2620b2f104abba706b3e522732,
         type: 3}
       propertyPath: m_TagString
-      value: NPC
+      value: Bodyguard
       objectReference: {fileID: 0}
     - target: {fileID: 6150264948702789853, guid: 17085d2620b2f104abba706b3e522732,
         type: 3}
@@ -109158,6 +109247,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2131894506}
+    - targetCorrespondingSourceObject: {fileID: 5661469185850222114, guid: 17085d2620b2f104abba706b3e522732,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2131894507}
   m_SourcePrefab: {fileID: 100100000, guid: 17085d2620b2f104abba706b3e522732, type: 3}
 --- !u!1 &2131894501 stripped
 GameObject:
@@ -109198,12 +109291,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4870f0fa69e4546abe2898ff94f450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  fleeDistance: 10
-  returnDistance: 15
-  speed: 5
-  animator: {fileID: 2131894505}
-  initialPosition: {x: 0, y: 0, z: 0}
 --- !u!195 &2131894504
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -109226,12 +109313,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!95 &2131894505 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 6150264948702789853, guid: 17085d2620b2f104abba706b3e522732,
-    type: 3}
-  m_PrefabInstance: {fileID: 2131894500}
-  m_PrefabAsset: {fileID: 0}
 --- !u!136 &2131894506
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -109255,6 +109336,31 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!114 &2131894507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131894501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f08f76acf8b71a4085087a0db407ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  fleeDistance: 10
+  returnDistance: 15
+  safeDistance: 20
+  speed: 5
+  animator: {fileID: 2131894508}
+  initialPosition: {x: 0, y: 0, z: 0}
+--- !u!95 &2131894508 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6150264948702789853, guid: 17085d2620b2f104abba706b3e522732,
+    type: 3}
+  m_PrefabInstance: {fileID: 2131894500}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &2132870764
 MeshRenderer:
   m_ObjectHideFlags: 0

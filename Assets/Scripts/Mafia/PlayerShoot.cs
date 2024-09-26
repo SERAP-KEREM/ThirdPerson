@@ -28,7 +28,7 @@ public class PlayerShoot : MonoBehaviour
                 Debug.Log("Vurulan objenin tag'i: " + targetTag);
 
                 // NPC scriptini al?p hasar vermek
-                NPC npc = hit.collider.GetComponent<NPC>();
+                Bodyguard npc = hit.collider.GetComponent<Bodyguard>();
                 if (npc != null)
                 {
                     Debug.Log("NPC bulundu, hasar veriliyor...");

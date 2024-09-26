@@ -10,6 +10,7 @@ TagManager:
   - Character
   - Ground
   - NPC
+  - Bodyguard
   layers:
   - Default
   - TransparentFX

@@ -982,10 +982,10 @@ GameObject:
   - component: {fileID: 8170000623543273262}
   - component: {fileID: 8170000623543273264}
   - component: {fileID: 8170000623543273265}
-  - component: {fileID: 2368675250614544291}
+  - component: {fileID: 2190143596125796842}
   m_Layer: 0
   m_Name: AlCharacter
-  m_TagString: NPC
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1027,6 +1027,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movingSpeed: 2
+  walkingSpeed: 5
+  runningSpeed: 10
   turningSpeed: 300
   stopSpeed: 1
   presentHealth: 0
@@ -1099,7 +1101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 8170000623543273266}
   currentWaypoint: {fileID: 0}
---- !u!195 &2368675250614544291
+--- !u!195 &2190143596125796842
 NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

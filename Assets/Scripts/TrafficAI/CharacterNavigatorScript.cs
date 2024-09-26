@@ -5,7 +5,9 @@ using UnityEngine;
 public class CharacterNavigatorScript : MonoBehaviour
 {
     [Header("Character Info")]
-    public float movingSpeed = 5f;
+    public float movingSpeed;   // Normal yürüme hızı
+    public float walkingSpeed = 3f;   // Normal yürüme hızı
+    public float runningSpeed = 5f;  // Koşma hızı
     public float turningSpeed = 300f;
     public float stopSpeed = 1f;
     private float characterHealth = 100f;
@@ -33,6 +35,7 @@ public class CharacterNavigatorScript : MonoBehaviour
     {
         // İlk pozisyonu sakla
         lastPosition = transform.position;
+        presentHealth = characterHealth; // Başlangıçta mevcut sağlık karakterin sağlığına eşit olmalı
     }
 
     private void Update()
@@ -59,6 +62,7 @@ public class CharacterNavigatorScript : MonoBehaviour
                 // AI Hareketi
                 if (!IsObstacleAhead())
                 {
+                    // Karakterin hareket etmesi
                     transform.Translate(Vector3.forward * movingSpeed * Time.deltaTime);
                 }
 
@@ -77,12 +81,10 @@ public class CharacterNavigatorScript : MonoBehaviour
     // Engellerde takılma kontrolü ve çözümü
     private void HandleObstacle()
     {
-        // Karakter minimum hareket mesafesinden (0.1 birim) az hareket ettiyse
         if (Vector3.Distance(transform.position, lastPosition) < minimumMovementDistance && !destinationReached)
         {
             timeStuck += Time.deltaTime;
 
-            // 2 saniye boyunca takılı kaldıysa etrafından dolan
             if (timeStuck >= obstacleWaitTime && !isStuck)
             {
                 isStuck = true;
@@ -91,11 +93,9 @@ public class CharacterNavigatorScript : MonoBehaviour
                 // Engeli aşmak için etrafından dolan
                 AvoidObstacle();
 
-                // Yeniden hareket etmeyi dene
                 timeStuck = 0f;
             }
 
-            // Eğer 5 saniyeden fazla aynı pozisyonda kaldıysa bir sonraki waypoint'e geç
             if (timeStuck >= maxStuckTime)
             {
                 Debug.Log("Karakter 5 saniyeden fazla aynı pozisyonda kaldı, bir sonraki hedefe geçiliyor...");
@@ -105,32 +105,25 @@ public class CharacterNavigatorScript : MonoBehaviour
         }
         else
         {
-            // Pozisyon değiştiyse zamanı sıfırla
             timeStuck = 0f;
         }
 
-        // Pozisyonu güncelle
         lastPosition = transform.position;
     }
 
-    // Engelin etrafından dolanma fonksiyonu
     private void AvoidObstacle()
     {
-        // Engeli aşmak için rastgele bir yana hareket etme stratejisi
         float randomDirectionX = Random.Range(-1f, 1f);
         float randomDirectionZ = Random.Range(-1f, 1f);
         Vector3 randomDirection = new Vector3(randomDirectionX, 0, randomDirectionZ).normalized;
         transform.Translate(randomDirection * 2f); // 2 birimlik bir hareket
     }
 
-    // Bir sonraki waypoint'e geçişi sağlayan fonksiyon
     private void GoToNextWaypoint()
     {
-        // Bir sonraki hedefin belirlenmesi kodu burada olmalı
-        LocalDestination(new Vector3(destination.x + 5f, destination.y, destination.z + 5f)); // Örnek bir yeni hedef
+        LocalDestination(new Vector3(destination.x + 5f, destination.y, destination.z + 5f));
     }
 
-    // Karakterin önünde engel olup olmadığını kontrol eden fonksiyon
     private bool IsObstacleAhead()
     {
         RaycastHit hit;
@@ -148,15 +141,34 @@ public class CharacterNavigatorScript : MonoBehaviour
         destinationReached = false;
     }
 
-    public void characterHitDamage(float takeDamage)
+    // Hasar aldığında 15 saniye boyunca koşma ve sonra yürümeye devam etme işlemi
+    public void CharacterHitDamage(float takeDamage)
     {
         presentHealth -= takeDamage;
 
-        if (presentHealth <= 0)
+        if (presentHealth > 0)
         {
+            // Sağlık sıfır değilse, karakter koşmaya başlar
+            StartCoroutine(RunForTime(15f));
+        }
+        else
+        {
+            // Eğer sağlık sıfırsa karakter ölür
             animator.SetBool("Die", true);
             characterDie();
         }
+    }
+
+    // Karakterin 15 saniye boyunca koşmasını sağlayan Coroutine
+    private IEnumerator RunForTime(float runDuration)
+    {
+        movingSpeed = runningSpeed;  // Koşma hızına geçiş
+        animator.SetBool("Escape", true);  // Koşma animasyonunu başlat
+        Debug.Log("Escape");
+        yield return new WaitForSeconds(runDuration);
+
+        movingSpeed = walkingSpeed;  // Tekrar yürüme hızına geçiş
+        animator.SetBool("Escape", false);  // Koşma animasyonunu durdur
     }
 
     private void characterDie()
