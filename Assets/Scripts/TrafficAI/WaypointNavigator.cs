@@ -7,18 +7,17 @@ public class WaypointNavigator : MonoBehaviour
     [Header("NPC Character")]
     public CharacterNavigatorScript character;
     public Waypoint currentWaypoint;
-    int direction;
-
+    private int direction;
 
     private void Awake()
     {
         character = GetComponent<CharacterNavigatorScript>();
-       // currentWaypoint = GetComponent<Waypoint>();
     }
+
     private void Start()
     {
-        direction = Mathf.RoundToInt(Random.Range(0f, 1f));
-        character.LocalDestination (currentWaypoint.GetPosition());
+        direction = Random.Range(0, 2); // 0 veya 1
+        character.LocalDestination(currentWaypoint.GetPosition());
     }
 
     private void Update()
@@ -29,28 +28,28 @@ public class WaypointNavigator : MonoBehaviour
 
             if (currentWaypoint.branches != null && currentWaypoint.branches.Count > 0)
             {
-                shouldBranch = Random.Range(0f, 1f) <= currentWaypoint.branchRatio ? true : false;
+                shouldBranch = Random.Range(0f, 1f) <= currentWaypoint.branchRatio;
             }
 
             if (shouldBranch)
             {
-                currentWaypoint = currentWaypoint.branches[Random.Range(0, currentWaypoint.branches.Count - 1)];
+                currentWaypoint = currentWaypoint.branches[Random.Range(0, currentWaypoint.branches.Count)];
             }
             else
             {
                 if (direction == 0)
                 {
-                    if(currentWaypoint.nextWaypoint !=null)
+                    if (currentWaypoint.nextWaypoint != null)
                     {
                         currentWaypoint = currentWaypoint.nextWaypoint;
                     }
                     else
                     {
                         currentWaypoint = currentWaypoint.previousWaypoint;
-                        direction = 1;
+                        direction = 1; // yönü de?i?tir
                     }
                 }
-                else if (direction == 1)
+                else
                 {
                     if (currentWaypoint.previousWaypoint != null)
                     {
@@ -59,7 +58,7 @@ public class WaypointNavigator : MonoBehaviour
                     else
                     {
                         currentWaypoint = currentWaypoint.nextWaypoint;
-                        direction = 0;
+                        direction = 0; // yönü de?i?tir
                     }
                 }
             }

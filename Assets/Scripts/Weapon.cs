@@ -91,7 +91,8 @@ public class Weapon : Item
                     Debug.Log($"Vurulan objenin tag'i: {hit.collider.tag}");
               
                     hit.collider.gameObject.GetComponent<Bodyguard>().TakeDamage(10);
-                } if (hit.collider.CompareTag("NPC"))
+                }
+                if (hit.collider.CompareTag("NPC"))
                 {
                     Debug.Log($"Vurulan objenin tag'i: {hit.collider.tag}");
               

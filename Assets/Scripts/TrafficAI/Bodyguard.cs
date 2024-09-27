@@ -1,42 +1,62 @@
 using UnityEngine;
 using UnityEngine.AI;
-using Unity.Netcode;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Bodyguard : NetworkBehaviour
+public class Bodyguard : MonoBehaviour
 {
     public float health = 100f;               // NPC'nin can?
-    public float fleeDistance = 10f;          // Kaç?? mesafesi
-    public float returnDistance = 15f;         // Geri dönü? için mesafe
-    public float safeDistance = 20f;           // NPC'nin player'dan uzakla?mas? gereken mesafe
-    public float speed = 5f;                   // NPC h?z?
+    public float fleeDistance = 10f;          // Kaçma mesafesi
+    public float returnDistance = 15f;        // Geri dönme mesafesi
+    public float fleeSpeed = 6f;              // Kaçarken h?z
+    public float walkSpeed = 3.5f;            // Yürüyü? h?z?
 
-    public Animator animator;                   // NPC animatörü
-    public Vector3 initialPosition;             // Ba?lang?ç pozisyonu
-    private Quaternion initialRotation;         // Ba?lang?ç rotas?
-    private NavMeshAgent navMeshAgent;         // NavMeshAgent bile?eni
-    private bool isFleeing = false;            // NPC kaç?yor mu?
-    private bool isReturning = false;          // NPC geri dönüyor mu?
-    private bool isDead = false;               // NPC ölü mü?
-    private Transform playerTransform;          // Oyuncu transformu
+    public Transform waypointParent;           // Waypoint'lerin parent'?
+    private List<Transform> waypoints = new List<Transform>();  // Waypoint listesi
+    public Animator animator;                  // NPC animatörü
+    private NavMeshAgent navMeshAgent;        // NavMeshAgent bile?eni
+    private bool isFleeing = false;           // NPC kaç?yor mu?
+    private bool isDead = false;              // NPC ölü mü?
+    private Vector3 initialPosition;          // NPC'nin ba?lang?ç pozisyonu
+    private int currentWaypointIndex = 0;     // ?u anki waypoint indeksi
 
     private void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        initialPosition = transform.position;  // Ba?lang?ç pozisyonunu kaydet
-        initialRotation = transform.rotation;  // Ba?lang?ç rotas?n? kaydet
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform; // Oyuncu transformunu al
+        initialPosition = transform.position;
 
-        // E?er NavMesh üzerinde de?ilse hata mesaj? göster
+        // NavMesh kontrolü
         if (!navMeshAgent.isOnNavMesh)
         {
             Debug.LogError("NPC NavMesh üzerinde de?il!");
         }
+
+        GetWaypointsFromParent();
+
+        // Oyun ba?lad???nda idle animasyonunu ayarla
+        animator.SetBool("Run", false); // Idle animasyonu
+    }
+
+    // Parent GameObject'in alt?ndaki waypoint'leri al
+    private void GetWaypointsFromParent()
+    {
+        if (waypointParent == null)
+        {
+            Debug.LogError("Waypoint parent atanmad?.");
+            return;
+        }
+
+        foreach (Transform child in waypointParent)
+        {
+            waypoints.Add(child);
+        }
+
+        Debug.Log("Toplam Waypoint Say?s?: " + waypoints.Count);
     }
 
     public void TakeDamage(float damageAmount)
     {
-        if (isDead) return;  // E?er ölü ise daha fazla i?lem yapmay?z
+        if (isDead) return;
 
         health -= damageAmount;
         Debug.Log($"NPC can?: {health}");
@@ -47,102 +67,99 @@ public class Bodyguard : NetworkBehaviour
         }
         else
         {
-            Debug.Log("kaç");
-            StartCoroutine(FleeCoroutine(playerTransform.position));
+            Debug.Log("NPC kaç?yor.");
+            animator.SetBool("Run", true); // Ko?ma animasyonuna geç
+            StartCoroutine(FleeToNearestWaypoint());
         }
     }
 
-    // Kaçma i?lemi
-    public void Flee(Vector3 target)
-    {
-        if (navMeshAgent == null)
-        {
-            Debug.LogError("NavMeshAgent atanmad?.");
-            return;
-        }
-        if (!navMeshAgent.isOnNavMesh)
-        {
-            Debug.LogError("NPC NavMesh üzerinde de?il!");
-            return;
-        }
-
-        Vector3 fleeDirection = (transform.position - target).normalized;
-        Vector3 fleeTarget = transform.position + fleeDirection * fleeDistance;
-
-        navMeshAgent.speed = speed;
-        navMeshAgent.SetDestination(fleeTarget);
-        animator.SetBool("Run", true);
-        isFleeing = true;
-    }
-
-    private void Update()
-    {
-        if (isFleeing)
-        {
-            // E?er kaçma mesafesine ula?t?ysa geri dön
-            if (Vector3.Distance(transform.position, initialPosition) > returnDistance)
-            {
-                ReturnToInitialPosition();
-            }
-        }
-        else if (Vector3.Distance(transform.position, playerTransform.position) > safeDistance)
-        {
-            ReturnToInitialPosition(); // E?er player ile yeterli mesafeye ula?t?ysa geri dön
-        }
-
-        if (isReturning)
-        {
-            // E?er NPC ba?lang?ç pozisyonuna geri döndüyse
-            if (Vector3.Distance(transform.position, initialPosition) < 0.5f)
-            {
-                animator.SetBool("Run", false);  // Kaçma animasyonunu durdur
-                navMeshAgent.ResetPath();         // Hareketi durdur
-                transform.rotation = initialRotation; // Rotay? geri yükle
-                isReturning = false;
-                isFleeing = false;
-            }
-        }
-    }
-
-    // Ba?lang?ç pozisyonuna geri dönme i?lemi
-    private void ReturnToInitialPosition()
-    {
-        if (navMeshAgent.isOnNavMesh)  // NavMesh üzerinde oldu?undan emin olun
-        {
-            navMeshAgent.SetDestination(initialPosition);
-            isReturning = true;
-            isFleeing = false;
-        }
-    }
-
-    // Ölüm i?lemi
-    private void Die()
-    {
-        isDead = true;
-        navMeshAgent.isStopped = true;  // NPC hareketi durur
-        animator.SetTrigger("Die");      // Ölüm animasyonu tetiklenir
-        Destroy(gameObject, 3f);         // 3 saniye sonra NPC yok olur
-    }
-
-    private IEnumerator FleeCoroutine(Vector3 target)
+    private IEnumerator FleeToNearestWaypoint()
     {
         if (navMeshAgent == null || !navMeshAgent.isOnNavMesh)
         {
             Debug.LogError("NavMeshAgent atanmad? ya da NavMesh üzerinde de?il.");
-            yield break;  // Coroutine'i durdur
+            yield break;
         }
 
-        Vector3 fleeDirection = (transform.position - target).normalized;
-        Vector3 fleeTarget = transform.position + fleeDirection * fleeDistance;
-
-        navMeshAgent.speed = speed;
-        navMeshAgent.SetDestination(fleeTarget);
-        animator.SetBool("Run", true);
+        navMeshAgent.speed = fleeSpeed;
         isFleeing = true;
 
-        // 10 saniye bekle
-        yield return new WaitForSeconds(10f);
+        Transform nearestWaypoint = GetNearestWaypoint();
 
-        ReturnToInitialPosition();  // Geri dön
+        if (nearestWaypoint != null)
+        {
+            navMeshAgent.SetDestination(nearestWaypoint.position);
+
+            // Kaç?? süresi
+            yield return new WaitForSeconds(15f);
+        }
+
+        if (!isDead)  // NPC hala hayatta m??
+        {
+            ReturnToInitialPosition();
+        }
+    }
+
+    private Transform GetNearestWaypoint()
+    {
+        Transform nearestWaypoint = null;
+        float shortestDistance = Mathf.Infinity;
+
+        foreach (Transform waypoint in waypoints)
+        {
+            float distance = Vector3.Distance(transform.position, waypoint.position);
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                nearestWaypoint = waypoint;
+            }
+        }
+
+        return nearestWaypoint;
+    }
+
+    private void ReturnToInitialPosition()
+    {
+        if (navMeshAgent.isOnNavMesh)
+        {
+            navMeshAgent.speed = walkSpeed;
+            navMeshAgent.SetDestination(initialPosition);
+            animator.SetBool("Run", false); // Idle animasyonuna dön
+
+            if (Vector3.Distance(transform.position, initialPosition) > returnDistance)
+            {
+                StartCoroutine(PatrolWaypoints()); // Waypointler aras?nda dola?
+            }
+        }
+    }
+
+    private IEnumerator PatrolWaypoints()
+    {
+        while (!isDead)
+        {
+            if (waypoints.Count == 0) yield break; // E?er waypoint yoksa ç?k
+
+            // ?u anki waypoint'e git
+            navMeshAgent.SetDestination(waypoints[currentWaypointIndex].position);
+            animator.SetBool("Run", false); // Normal h?zda yürüyü? animasyonunu etkinle?tir
+
+            // Waypoint'e ula?ana kadar bekle
+            while (Vector3.Distance(transform.position, waypoints[currentWaypointIndex].position) > 1f)
+            {
+                yield return null; // Bir sonraki frame'i bekle
+            }
+
+            // Hedef waypoint'e ula??ld???nda, s?radaki waypoint'e geç
+            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Count; // Sonraki waypoint'e geç
+            yield return new WaitForSeconds(2f); // Waypoint aras?nda biraz bekle
+        }
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        navMeshAgent.isStopped = true;
+        animator.SetTrigger("Die");
+        Destroy(gameObject, 3f);
     }
 }

@@ -163,12 +163,12 @@ public class CharacterNavigatorScript : MonoBehaviour
     private IEnumerator RunForTime(float runDuration)
     {
         movingSpeed = runningSpeed;  // Koşma hızına geçiş
-        animator.SetBool("Escape", true);  // Koşma animasyonunu başlat
-        Debug.Log("Escape");
+        animator.SetBool("Run", true);  // Koşma animasyonunu başlat
+        Debug.Log("Run");
         yield return new WaitForSeconds(runDuration);
 
         movingSpeed = walkingSpeed;  // Tekrar yürüme hızına geçiş
-        animator.SetBool("Escape", false);  // Koşma animasyonunu durdur
+        animator.SetBool("Run", false);  // Koşma animasyonunu durdur
     }
 
     private void characterDie()
