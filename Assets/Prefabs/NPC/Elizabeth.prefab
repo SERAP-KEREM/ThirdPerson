@@ -125,7 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movingSpeed: 2
   walkingSpeed: 3
-  runningSpeed: 10
+  runningSpeed: 5
   turningSpeed: 300
   stopSpeed: 1
   presentHealth: 0

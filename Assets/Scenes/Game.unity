@@ -620,7 +620,7 @@ PrefabInstance:
     - target: {fileID: 6447372882033517613, guid: 712c740e2f9bda34f8862564ae9e0dc4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.682
+      value: -21.197998
       objectReference: {fileID: 0}
     - target: {fileID: 6447372882033517613, guid: 712c740e2f9bda34f8862564ae9e0dc4,
         type: 3}
@@ -630,7 +630,7 @@ PrefabInstance:
     - target: {fileID: 6447372882033517613, guid: 712c740e2f9bda34f8862564ae9e0dc4,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.73599994
       objectReference: {fileID: 0}
     - target: {fileID: 6447372882033517613, guid: 712c740e2f9bda34f8862564ae9e0dc4,
         type: 3}
@@ -8428,7 +8428,7 @@ PrefabInstance:
     - target: {fileID: 3618270812317739991, guid: 99cc1f2b4f6a67745827bf2998747bce,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.906
+      value: -19.609999
       objectReference: {fileID: 0}
     - target: {fileID: 3618270812317739991, guid: 99cc1f2b4f6a67745827bf2998747bce,
         type: 3}
@@ -8438,7 +8438,7 @@ PrefabInstance:
     - target: {fileID: 3618270812317739991, guid: 99cc1f2b4f6a67745827bf2998747bce,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.095
+      value: 1.831
       objectReference: {fileID: 0}
     - target: {fileID: 3618270812317739991, guid: 99cc1f2b4f6a67745827bf2998747bce,
         type: 3}
@@ -8557,8 +8557,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   fleeSpeed: 6
-  walkSpeed: 3.5
-  waypointParent: {fileID: 1928484320}
+  fleeDuration: 15
+  fleeTarget: {fileID: 1629035414}
   animator: {fileID: 169450041}
 --- !u!23 &169930635
 MeshRenderer:
@@ -18021,8 +18021,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   fleeSpeed: 6
-  walkSpeed: 3.5
-  waypointParent: {fileID: 1928484320}
+  fleeDuration: 15
+  fleeTarget: {fileID: 1629035414}
   animator: {fileID: 380353167}
 --- !u!95 &380353167 stripped
 Animator:
@@ -25739,7 +25739,7 @@ PrefabInstance:
     - target: {fileID: 4217817015802865332, guid: cae9259c892764b4b9c480dba1f5cef2,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.624
+      value: -21.14
       objectReference: {fileID: 0}
     - target: {fileID: 4217817015802865332, guid: cae9259c892764b4b9c480dba1f5cef2,
         type: 3}
@@ -25749,7 +25749,7 @@ PrefabInstance:
     - target: {fileID: 4217817015802865332, guid: cae9259c892764b4b9c480dba1f5cef2,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.815
+      value: 2.551
       objectReference: {fileID: 0}
     - target: {fileID: 4217817015802865332, guid: cae9259c892764b4b9c480dba1f5cef2,
         type: 3}
@@ -25868,8 +25868,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   fleeSpeed: 6
-  walkSpeed: 3.5
-  waypointParent: {fileID: 1928484320}
+  fleeDuration: 15
+  fleeTarget: {fileID: 1629035414}
   animator: {fileID: 533675618}
 --- !u!23 &534025463
 MeshRenderer:
@@ -80711,6 +80711,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1639056682}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1629035413
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1629035414}
+  m_Layer: 0
+  m_Name: TargetBodyguard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1629035414
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629035413}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -20.72, y: -2.13279, z: 84.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1629589399
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -89047,6 +89078,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WaypointOrigin
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267324899413283148, guid: ce68d99a0bc1ea0408791bf404d1f863,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7506374677565985506, guid: ce68d99a0bc1ea0408791bf404d1f863,
         type: 3}
@@ -108665,7 +108701,7 @@ PrefabInstance:
     - target: {fileID: 1494881163966695401, guid: 17085d2620b2f104abba706b3e522732,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.864
+      value: -22.38
       objectReference: {fileID: 0}
     - target: {fileID: 1494881163966695401, guid: 17085d2620b2f104abba706b3e522732,
         type: 3}
@@ -108675,7 +108711,7 @@ PrefabInstance:
     - target: {fileID: 1494881163966695401, guid: 17085d2620b2f104abba706b3e522732,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.064
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 1494881163966695401, guid: 17085d2620b2f104abba706b3e522732,
         type: 3}
@@ -108817,8 +108853,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   fleeSpeed: 6
-  walkSpeed: 3.5
-  waypointParent: {fileID: 1928484320}
+  fleeDuration: 15
+  fleeTarget: {fileID: 1629035414}
   animator: {fileID: 2131894508}
 --- !u!95 &2131894508 stripped
 Animator:
@@ -121234,3 +121270,4 @@ SceneRoots:
   - {fileID: 5828452990591150996}
   - {fileID: 2774419062106352157}
   - {fileID: 8157797305717189937}
+  - {fileID: 1629035414}
