@@ -45,4 +45,4 @@ Unfortunately, GitHub doesn't support direct video playback. You can watch the g
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/SERAP-KEREM/ThirdPerson/blob/main/MIT%20License.txt) file for details.
