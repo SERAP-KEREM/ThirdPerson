@@ -31,9 +31,7 @@ https://github.com/user-attachments/assets/36d32aa7-c69e-4c6d-af97-032cf367561d
 
 ## 🛠 Technologies Used
 
-- **Unity**
-- **C#**
-- **Unity Netcode**
+![](https://img.shields.io/badge/Unity-100000?style=for-the-badge&logo=unity&logoColor=white) ![](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white) ![](https://img.shields.io/badge/Unity%20Netcode-8B3F3F?style=for-the-badge&logo=unity&logoColor=white)
 
 ## 🔧 How to Play
 
