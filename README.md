@@ -13,7 +13,7 @@
 
 ## 🎥 Gameplay Video
 
-Unfortunately, GitHub doesn't support direct video playback. You can watch the gameplay video [here on YouTube](https://www.youtube.com/watch?v=INSERT_YOUTUBE_VIDEO_ID).
+Unfortunately, GitHub doesn't support direct video playback. You can watch the gameplay video [here on Video](https://github.com/SERAP-KEREM/ThirdPerson/blob/main/Assets/GameImages/MultiplayerThird%20Person%20Shooter.mp4).
 
 ## 📸 Additional Screenshots
 
