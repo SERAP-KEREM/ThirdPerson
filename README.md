@@ -1,5 +1,8 @@
 # Multiplayer Third-Person Shooter
 
+## 🎥 Gameplay Video
+
+https://github.com/user-attachments/assets/36d32aa7-c69e-4c6d-af97-032cf367561d
 
 ## 🎮 Features
 
@@ -10,10 +13,6 @@
 - **Inventory Collection**: Players can collect items from the ground, such as weapons and health packs, to enhance their survivability in combat.
 - **Character Selection**: At the start of the game, players can choose from a roster of characters. Each character has visual uniqueness but shares similar abilities, promoting a level playing field.
 - **NPC Characters**: Non-player characters (NPCs) are integrated into the game to create additional challenges and immersive elements during gameplay.
-
-## 🎥 Gameplay Video
-
-Unfortunately, GitHub doesn't support direct video playback. You can watch the gameplay video [here on Video](https://github.com/SERAP-KEREM/ThirdPerson/blob/main/Assets/GameImages/MultiplayerThird%20Person%20Shooter.mp4).
 
 ## 📸 Additional Screenshots
 
@@ -44,5 +43,4 @@ Unfortunately, GitHub doesn't support direct video playback. You can watch the g
 4. Enjoy multiplayer battles with friends!
 
 ## 📄 License
-
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/SERAP-KEREM/ThirdPerson/blob/main/MIT%20License.txt) file for details.
